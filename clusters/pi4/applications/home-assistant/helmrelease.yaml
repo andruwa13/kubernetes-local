@@ -23,7 +23,7 @@ spec:
     service:
       type: NodePort
       port: 8123
-      nodePort: 38124
+      nodePort: 32124
     ingress:
       enabled: false
     extraVolumes:
