@@ -25,6 +25,6 @@ spec:
       type: ClusterIP
     ingress:
       enabled: false
-    additionalMounts:
-      - name: bluetooth
-        mountPath: /run/dbus
+#    additionalMounts:
+#      - name: bluetooth
+#        mountPath: /run/dbus
