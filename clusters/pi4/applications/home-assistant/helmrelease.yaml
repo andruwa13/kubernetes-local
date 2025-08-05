@@ -12,7 +12,7 @@ spec:
         kind: HelmRepository
         name: home-assistant
         namespace: flux-system
-      version: "1.7.0"  # актуальна версія чарту (дивіться у repo)
+      version: "1.7.0"
   interval: 5m
   values:
     image:
