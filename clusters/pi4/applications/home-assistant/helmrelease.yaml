@@ -25,11 +25,6 @@ spec:
       type: ClusterIP
     ingress:
       enabled: false
-
-    additionalMounts:
-      - mountPath: /var/run/dbus/system_bus_socket
-        name: usb
-
 #    additionalMounts:
 #      - name: bluetooth
 #        mountPath: /run/dbus
