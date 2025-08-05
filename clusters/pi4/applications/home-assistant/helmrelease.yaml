@@ -22,7 +22,8 @@ spec:
       size: 5Gi
     service:
       type: NodePort
-      port: 38123
+      port: 8123
+      nodePort: 38123
     ingress:
       enabled: false
     extraVolumes:
