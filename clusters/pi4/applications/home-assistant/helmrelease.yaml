@@ -22,3 +22,13 @@ spec:
       type: ClusterIP
     ingress:
       enabled: false
+    extraVolumes:
+      - name: bluetooth
+        hostPath:
+          path: /run/dbus
+    #Bluetooth devices
+    extraVolumeMounts:
+      - name: bluetooth
+        mountPath: /run/dbus
+        # note that this is readonly to prevent security issues
+        readOnly: true
