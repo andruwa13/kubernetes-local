@@ -15,11 +15,14 @@ spec:
       version: "1.7.0"  # актуальна версія чарту (дивіться у repo)
   interval: 5m
   values:
+    image:
+      tag: 2025.7.4
     persistence:
       enabled: true
       size: 5Gi
     service:
-      type: ClusterIP
+      type: NodePort
+      port: 38123
     ingress:
       enabled: false
     extraVolumes:
