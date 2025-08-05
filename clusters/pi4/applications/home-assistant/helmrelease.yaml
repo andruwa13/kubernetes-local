@@ -15,15 +15,14 @@ spec:
       version: "1.7.0"
   interval: 5m
   values:
+    hostNetwork: true
     image:
       tag: 2025.7.4
     persistence:
       enabled: true
       size: 5Gi
     service:
-      type: NodePort
-      port: 8123
-      nodePort: 32222
+      type: ClusterIP
     ingress:
       enabled: false
     extraVolumes:
