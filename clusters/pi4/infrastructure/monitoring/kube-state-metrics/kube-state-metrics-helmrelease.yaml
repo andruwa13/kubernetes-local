@@ -1,0 +1,19 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: kube-state-metrics
+  namespace: vm
+spec:
+  releaseName: kube-state-metrics
+  chart:
+    spec:
+      chart: kube-state-metrics
+      sourceRef:
+        kind: HelmRepository
+        name: prometheus-community
+        namespace: flux-system
+      version: "5.27.0"
+  interval: 2m
+  timeout: 5m
+  # Додаткові налаштування, якщо потрібно
+  values: {}
