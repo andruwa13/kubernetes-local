@@ -25,6 +25,18 @@ spec:
       type: ClusterIP
     ingress:
       enabled: false
+
+    additionalVolumes:
+      - name: dbus
+        hostPath:
+          path: /run/dbus
+          type: Directory
+
+    additionalMounts:
+      - name: dbus
+        mountPath: /run/dbus
+        readOnly: true
+
 #    additionalMounts:
 #      - name: bluetooth
 #        mountPath: /run/dbus
