@@ -13,10 +13,6 @@ spec:
         name: prometheus-community
         namespace: flux-system
       version: "4.42.0"
-  interval: 5m
-  values:
-  # Тут можна додати кастомні налаштування для node-exporter
-  # наприклад:
-  # service:
-  #   type: ClusterIP
-  #   port: 9100
+  interval: 2m
+  timeout: 5m
+  values: {}
