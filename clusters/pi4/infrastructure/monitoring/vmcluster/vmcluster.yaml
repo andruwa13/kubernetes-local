@@ -1,0 +1,50 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMCluster
+metadata:
+  name: demo
+  namespace: vm
+spec:
+  retentionPeriod: "30d"
+  clusterVersion: v1.107.0-cluster
+  replicationFactor: 1
+  vmstorage:
+    # vmBackup:
+    #   acceptEULA: true
+    replicaCount: 1
+    storageDataPath: "/vm-data"
+    storage:
+      volumeClaimTemplate:
+        spec:
+          resources:
+            requests:
+              storage: "10Gi"
+          # Додайте storageClassName якщо потрібно
+          # storageClassName: "fast-ssd"
+  vmselect:
+    replicaCount: 1
+    cacheMountPath: "/select-cache"
+    storage:
+      volumeClaimTemplate:
+        spec:
+          resources:
+            requests:
+              storage: "10Gi"
+          # storageClassName: "fast-ssd"
+    # Налаштування ресурсів
+    resources:
+      requests:
+        cpu: 100m
+        memory: 200Mi
+      limits:
+        cpu: 500m
+        memory: 1Gi
+  vminsert:
+    replicaCount: 1
+    # Налаштування ресурсів
+    resources:
+      requests:
+        cpu: 100m
+        memory: 200Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi
