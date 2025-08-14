@@ -18,14 +18,12 @@ spec:
   dependsOn:
     - name: prometheus-operator-crds
       namespace: vm
-  # Автооновлення для dev середовища
   install:
     remediation:
       retries: 3
   upgrade:
     remediation:
       retries: 3
-    strategy: Recreate
   values:
     operator:
       enable_converter: true
