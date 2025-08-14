@@ -11,10 +11,10 @@ spec:
   git:
     checkout:
       ref:
-        branch: main
+        branch: master
     commit:
       author:
-        email: flux-bot@example.com
+        email: flux-bot@pi4.com
         name: Flux Image Update Bot
       messageTemplate: |
         [automated] Update node-exporter image
@@ -24,7 +24,7 @@ spec:
         - {{println .}}
         {{end}}
     push:
-      branch: main
+      branch: master
   update:
     path: "./"
     strategy: Setters
