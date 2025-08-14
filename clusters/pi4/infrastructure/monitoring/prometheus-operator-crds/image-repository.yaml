@@ -1,0 +1,13 @@
+apiVersion: image.toolkit.fluxcd.io/v1beta2
+kind: ImageRepository
+metadata:
+  name: prometheus-operator-crds-image
+  namespace: flux-system
+spec:
+  # Образ prometheus prometheus-operator-crds з Docker Hub
+  image: registry.k8s.io/prometheus-operator/prometheus-operator-crds
+  interval: 5m
+  # Або якщо використовуєте власний образ в GitLab Registry:
+  # image: registry.gitlab.com/your-group/your-project/prometheus-operator-crds
+  # secretRef:
+  #   name: gitlab-registry-secret
