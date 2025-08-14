@@ -17,12 +17,24 @@ spec:
         email: flux-bot@pi4.com
         name: Flux Image Update Bot
       messageTemplate: |
-        [automated] Update node-exporter image
+        🚀 Automated Image Update
 
-        Bumped images:
+        ## Updated Images:
         {{range .Updated.Images}}
-        - {{println .}}
+        ### 📦 {{.Name}}
+        - **Previous version:** `{{.OldTag}}`
+        - **New version:** `{{.NewTag}}`
+        - **Registry:** {{.Repository}}
+        - **Policy:** {{.Policy}}
+
         {{end}}
+        ## Updated Files:
+        {{range .Updated.Files}}
+        - 📄 `{{.Path}}`
+        {{end}}
+
+        ---
+        _Automated by FluxCD Image Update Automation_
     push:
       branch: master
   update:
