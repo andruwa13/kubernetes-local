@@ -26,5 +26,8 @@ spec:
     remediation:
       retries: 3
   values:
+    image:
+      # Маркер для автооновлення - FluxCD замінить цей тег автоматично
+      tag: "v1.8.2" # {"$imagepolicy": "flux-system:node-exporter-policy:tag"}
     nodeSelector:
       kubernetes.io/hostname: server

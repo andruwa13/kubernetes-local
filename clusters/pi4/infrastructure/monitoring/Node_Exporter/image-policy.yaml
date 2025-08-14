@@ -1,0 +1,15 @@
+apiVersion: image.toolkit.fluxcd.io/v1beta2
+kind: ImagePolicy
+metadata:
+  name: node-exporter-policy
+  namespace: flux-system
+spec:
+  imageRepositoryRef:
+    name: node-exporter-image
+  policy:
+    # Для семантичного версіонування
+    semver:
+      range: ">=4.42.0 <5.0.0"
+    # Або для dev середовища (останній тег)
+    # numerical:
+    #   order: asc

@@ -1,0 +1,13 @@
+apiVersion: image.toolkit.fluxcd.io/v1beta2
+kind: ImageRepository
+metadata:
+  name: node-exporter-image
+  namespace: flux-system
+spec:
+  # Образ prometheus node-exporter з Docker Hub
+  image: quay.io/prometheus/node-exporter
+  interval: 5m
+  # Або якщо використовуєте власний образ в GitLab Registry:
+  # image: registry.gitlab.com/your-group/your-project/node-exporter
+  # secretRef:
+  #   name: gitlab-registry-secret
