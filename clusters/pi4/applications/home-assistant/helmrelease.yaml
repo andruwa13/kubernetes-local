@@ -24,7 +24,7 @@ spec:
   values:
     hostNetwork: true
     image:
-      tag: "2025.7.4" # {"$imagepolicy": "flux-system:home-assistant-policy:tag"}
+      tag: "2025.8.1" # {"$imagepolicy": "flux-system:home-assistant-policy:tag"}
     persistence:
       enabled: true
       size: 5Gi
@@ -32,16 +32,13 @@ spec:
       type: ClusterIP
     ingress:
       enabled: false
-
     nodeSelector:
       kubernetes.io/hostname: pi4
-
     additionalVolumes:
       - name: dbus
         hostPath:
           path: /run/dbus
           type: Directory
-
     additionalMounts:
       - name: dbus
         mountPath: /run/dbus
