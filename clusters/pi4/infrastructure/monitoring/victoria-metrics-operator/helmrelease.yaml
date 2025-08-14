@@ -12,7 +12,7 @@ spec:
         kind: HelmRepository
         name: victoria-metrics
         namespace: flux-system
-      version: "0.36.0" # {"$imagepolicy": "vm:victoria-metrics-operator"}
+      version: "0.36.0"
   interval: 1m
   timeout: 5m
   dependsOn:
