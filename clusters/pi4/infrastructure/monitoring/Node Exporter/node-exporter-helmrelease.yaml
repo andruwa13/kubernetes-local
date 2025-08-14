@@ -25,7 +25,6 @@ spec:
   upgrade:
     remediation:
       retries: 3
-    strategy: Recreate
   values:
     nodeSelector:
       kubernetes.io/hostname: server
