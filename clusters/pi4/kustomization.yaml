@@ -3,8 +3,11 @@ kind: Kustomization
 
 resources:
   - flux-system/
-  - infrastructure/
-  - applications/
+  - infrastructure/monitoring/
+  - infrastructure/ingress-nginx/
+  - applications/home-assistant/
+  - applications/gitlab-agent/
+  - vmcluster/
 
 commonLabels:
   app.kubernetes.io/part-of: pi4-cluster
