@@ -24,6 +24,9 @@ spec:
       retries: 3
   values:
     controller:
+      image:
+        tag: "v1.16.0" # {"$imagepolicy": "flux-system:ingress-nginx-policy:tag"}
+        imagePullPolicy: IfNotPresent
       metrics:
         enabled: true
         service:

@@ -1,0 +1,12 @@
+apiVersion: image.toolkit.fluxcd.io/v1beta2
+kind: ImageRepository
+metadata:
+  name: ingress-nginx-image
+  namespace: flux-system
+spec:
+  image: k8s.gcr.io/ingress-nginx/controller
+  interval: 5m
+  # Або якщо використовуєте власний образ в GitLab Registry:
+  # image: registry.gitlab.com/your-group/your-project/ingress-nginx
+  # secretRef:
+  #   name: gitlab-registry-secret
