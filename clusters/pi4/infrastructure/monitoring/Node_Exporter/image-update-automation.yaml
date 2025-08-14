@@ -21,12 +21,14 @@ spec:
 
         Updated images:
         {{range .Updated.Images}}
-        - {{.Name}}: {{.}}
+        📦 {{.Name}}: {{.}}
         {{end}}
 
+        {{with .Updated.Files}}
         Updated files:
-        {{range .Updated.Files}}
-        - {{.Path}}
+        {{range .}}
+        📄 {{.}}
+        {{end}}
         {{end}}
 
         ---
