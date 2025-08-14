@@ -19,18 +19,14 @@ spec:
       messageTemplate: |
         🚀 Automated Image Update
 
-        ## Updated Images:
+        Updated images:
         {{range .Updated.Images}}
-        ### 📦 {{.Name}}
-        - **Previous version:** `{{.OldTag}}`
-        - **New version:** `{{.NewTag}}`
-        - **Registry:** {{.Repository}}
-        - **Policy:** {{.Policy}}
-
+        - {{.Name}}: {{.}}
         {{end}}
-        ## Updated Files:
+
+        Updated files:
         {{range .Updated.Files}}
-        - 📄 `{{.Path}}`
+        - {{.Path}}
         {{end}}
 
         ---
