@@ -1,50 +1,15 @@
 apiVersion: operator.victoriametrics.com/v1beta1
 kind: VMCluster
 metadata:
-  name: demo
+  name: dev
   namespace: vm
   labels:
     app.kubernetes.io/name: vmcluster
-    app.kubernetes.io/instance: demo
+    app.kubernetes.io/instance: dev
 spec:
   retentionPeriod: "30d"
   clusterVersion: v1.107.0-cluster
   replicationFactor: 1
-  
-  # Налаштування Service
-  serviceSpec:
-    type: ClusterIP
-    ports:
-      - name: vmselect
-        port: 8481
-        targetPort: 8481
-        protocol: TCP
-      - name: vminsert
-        port: 8480
-        targetPort: 8480
-        protocol: TCP
-      - name: vmstorage
-        port: 8482
-        targetPort: 8482
-        protocol: TCP
-  
-  # Налаштування Ingress
-  ingressSpec:
-    ingressClassName: nginx
-    annotations:
-      nginx.ingress.kubernetes.io/rewrite-target: /
-      nginx.ingress.kubernetes.io/ssl-redirect: "false"
-    rules:
-      - host: vm.pi4.local  # Змініть на ваш домен
-        http:
-          paths:
-            - path: /
-              pathType: Prefix
-              backend:
-                service:
-                  name: vmcluster-demo
-                  port:
-                    number: 8481
   
   vmstorage:
     replicaCount: 1
@@ -63,6 +28,8 @@ spec:
       limits:
         cpu: 1000m
         memory: 2Gi
+    nodeSelector:
+      kubernetes.io/hostname: server
   
   vmselect:
     replicaCount: 1
@@ -81,6 +48,8 @@ spec:
       limits:
         cpu: 500m
         memory: 1Gi
+    nodeSelector:
+      kubernetes.io/hostname: server
   
   vminsert:
     replicaCount: 1
@@ -91,3 +60,5 @@ spec:
       limits:
         cpu: 500m
         memory: 512Mi
+    nodeSelector:
+      kubernetes.io/hostname: server

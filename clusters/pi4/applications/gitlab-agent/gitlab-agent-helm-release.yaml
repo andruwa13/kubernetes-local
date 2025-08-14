@@ -19,6 +19,9 @@ spec:
   releaseName: gitlab-agent
   targetNamespace: gitlab-agent
   values:
+    nodeSelector:
+      kubernetes.io/hostname: server
+    
     config:
       kasAddress: wss://kas.gitlab.com
       secretName: gitlab-agent-token

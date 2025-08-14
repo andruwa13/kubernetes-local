@@ -26,6 +26,9 @@ spec:
       retries: 3
     strategy: Recreate
   values:
+    nodeSelector:
+      kubernetes.io/hostname: server
+    
     # Налаштування для правильної обробки CRDs
     fullnameOverride: ""
     nameOverride: ""

@@ -25,6 +25,9 @@ spec:
     remediation:
       retries: 3
   values:
+    nodeSelector:
+      kubernetes.io/hostname: server
+    
     operator:
       enable_converter: true
       prometheus_converter_add_argocd_ignore_annotations: false

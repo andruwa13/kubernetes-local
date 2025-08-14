@@ -27,4 +27,6 @@ spec:
       retries: 3
     strategy: Recreate
   # Додаткові налаштування, якщо потрібно
-  values: {}
+  values:
+    nodeSelector:
+      kubernetes.io/hostname: server
