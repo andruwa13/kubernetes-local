@@ -27,5 +27,7 @@ spec:
       retries: 3
   # Додаткові налаштування, якщо потрібно
   values:
+    image:
+      tag: "v2.14.0" # {"$imagepolicy": "flux-system:kube-state-metrics-policy:tag"}
     nodeSelector:
       kubernetes.io/hostname: server

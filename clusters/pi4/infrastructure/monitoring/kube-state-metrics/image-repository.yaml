@@ -1,0 +1,13 @@
+apiVersion: image.toolkit.fluxcd.io/v1beta2
+kind: ImageRepository
+metadata:
+  name: kube-state-metrics-image
+  namespace: flux-system
+spec:
+  # Образ prometheus kube-state-metrics з Docker Hub
+  image: registry.k8s.io/kube-state-metrics/kube-state-metrics
+  interval: 5m
+  # Або якщо використовуєте власний образ в GitLab Registry:
+  # image: registry.gitlab.com/your-group/your-project/kube-state-metrics
+  # secretRef:
+  #   name: gitlab-registry-secret
