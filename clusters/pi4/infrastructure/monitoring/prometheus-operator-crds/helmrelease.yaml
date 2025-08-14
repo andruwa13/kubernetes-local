@@ -12,13 +12,19 @@ spec:
         kind: HelmRepository
         name: prometheus-community
         namespace: flux-system
-      version: "16.0.1"
-  interval: 2m
+      version: "16.0.1" # {"$imagepolicy": "vm:prometheus-operator-crds"}
+  interval: 1m
   timeout: 10m
+  # Автооновлення для dev середовища
   install:
     crds: CreateReplace
+    remediation:
+      retries: 3
   upgrade:
     crds: CreateReplace
+    remediation:
+      retries: 3
+    strategy: Recreate
   values:
     # Налаштування для правильної обробки CRDs
     fullnameOverride: ""

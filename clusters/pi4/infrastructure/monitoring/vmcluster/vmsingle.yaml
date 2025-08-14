@@ -1,0 +1,59 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMSingle
+metadata:
+  name: demo-single
+  namespace: vm
+  labels:
+    app.kubernetes.io/name: vmsingle
+    app.kubernetes.io/instance: demo
+spec:
+  # Налаштування Service
+  serviceSpec:
+    type: ClusterIP
+    ports:
+      - name: http
+        port: 8428
+        targetPort: 8428
+        protocol: TCP
+  
+  # Налаштування Ingress
+  ingressSpec:
+    ingressClassName: nginx
+    annotations:
+      nginx.ingress.kubernetes.io/rewrite-target: /
+      nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    rules:
+      - host: vmsingle.pi4.local  # Змініть на ваш домен
+        http:
+          paths:
+            - path: /
+              pathType: Prefix
+              backend:
+                service:
+                  name: vmsingle-demo-single
+                  port:
+                    number: 8428
+  
+  # Налаштування ресурсів
+  resources:
+    requests:
+      cpu: 200m
+      memory: 500Mi
+    limits:
+      cpu: 1000m
+      memory: 2Gi
+  
+  # Налаштування storage
+  storage:
+    volumeClaimTemplate:
+      spec:
+        resources:
+          requests:
+            storage: "10Gi"
+        # storageClassName: "fast-ssd"
+  
+  # Налаштування retention
+  retentionPeriod: "30d"
+  
+  # Налаштування реплік
+  replicaCount: 1

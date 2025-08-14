@@ -3,13 +3,50 @@ kind: VMCluster
 metadata:
   name: demo
   namespace: vm
+  labels:
+    app.kubernetes.io/name: vmcluster
+    app.kubernetes.io/instance: demo
 spec:
   retentionPeriod: "30d"
   clusterVersion: v1.107.0-cluster
   replicationFactor: 1
+  
+  # Налаштування Service
+  serviceSpec:
+    type: ClusterIP
+    ports:
+      - name: vmselect
+        port: 8481
+        targetPort: 8481
+        protocol: TCP
+      - name: vminsert
+        port: 8480
+        targetPort: 8480
+        protocol: TCP
+      - name: vmstorage
+        port: 8482
+        targetPort: 8482
+        protocol: TCP
+  
+  # Налаштування Ingress
+  ingressSpec:
+    ingressClassName: nginx
+    annotations:
+      nginx.ingress.kubernetes.io/rewrite-target: /
+      nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    rules:
+      - host: vm.pi4.local  # Змініть на ваш домен
+        http:
+          paths:
+            - path: /
+              pathType: Prefix
+              backend:
+                service:
+                  name: vmcluster-demo
+                  port:
+                    number: 8481
+  
   vmstorage:
-    # vmBackup:
-    #   acceptEULA: true
     replicaCount: 1
     storageDataPath: "/vm-data"
     storage:
@@ -18,8 +55,15 @@ spec:
           resources:
             requests:
               storage: "10Gi"
-          # Додайте storageClassName якщо потрібно
           # storageClassName: "fast-ssd"
+    resources:
+      requests:
+        cpu: 200m
+        memory: 500Mi
+      limits:
+        cpu: 1000m
+        memory: 2Gi
+  
   vmselect:
     replicaCount: 1
     cacheMountPath: "/select-cache"
@@ -28,9 +72,8 @@ spec:
         spec:
           resources:
             requests:
-              storage: "10Gi"
+              storage: "5Gi"
           # storageClassName: "fast-ssd"
-    # Налаштування ресурсів
     resources:
       requests:
         cpu: 100m
@@ -38,9 +81,9 @@ spec:
       limits:
         cpu: 500m
         memory: 1Gi
+  
   vminsert:
     replicaCount: 1
-    # Налаштування ресурсів
     resources:
       requests:
         cpu: 100m

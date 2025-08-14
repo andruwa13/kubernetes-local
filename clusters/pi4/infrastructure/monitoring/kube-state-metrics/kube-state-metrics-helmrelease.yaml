@@ -12,8 +12,19 @@ spec:
         kind: HelmRepository
         name: prometheus-community
         namespace: flux-system
-      version: "5.27.0"
-  interval: 2m
+      version: "5.27.0" # {"$imagepolicy": "vm:kube-state-metrics"}
+  interval: 1m
   timeout: 5m
+  dependsOn:
+    - name: prometheus-operator-crds
+      namespace: vm
+  # Автооновлення для dev середовища
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+    strategy: Recreate
   # Додаткові налаштування, якщо потрібно
   values: {}

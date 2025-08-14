@@ -13,8 +13,16 @@ spec:
         name: ingress-nginx
         namespace: flux-system
       version: "4.11.3"
-  interval: 2m
+  interval: 1m
   timeout: 5m
+  # Автооновлення для dev середовища
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+    strategy: Recreate
   values:
     controller:
       metrics:

@@ -13,7 +13,15 @@ spec:
         name: home-assistant
         namespace: flux-system
       version: "0.3.13"
-  interval: 2m
+  interval: 1m
+  # Автооновлення для dev середовища
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+    strategy: Recreate
   values:
     hostNetwork: true
     image:

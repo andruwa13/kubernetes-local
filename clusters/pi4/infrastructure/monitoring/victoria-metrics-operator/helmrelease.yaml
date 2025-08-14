@@ -12,11 +12,20 @@ spec:
         kind: HelmRepository
         name: victoria-metrics
         namespace: flux-system
-      version: "0.36.0"
-  interval: 2m
+      version: "0.36.0" # {"$imagepolicy": "vm:victoria-metrics-operator"}
+  interval: 1m
   timeout: 5m
   dependsOn:
     - name: prometheus-operator-crds
+      namespace: vm
+  # Автооновлення для dev середовища
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+    strategy: Recreate
   values:
     operator:
       enable_converter: true
