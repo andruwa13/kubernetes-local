@@ -25,6 +25,7 @@ spec:
     hostNetwork: true
     image:
       tag: "2025.8.1" # {"$imagepolicy": "flux-system:home-assistant-policy:tag"}
+      imagePullPolicy: IfNotPresent
     persistence:
       enabled: true
       size: 5Gi
