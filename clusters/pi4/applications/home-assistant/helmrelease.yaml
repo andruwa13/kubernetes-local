@@ -24,7 +24,7 @@ spec:
   values:
     hostNetwork: true
     image:
-      tag: "2025.8.1" # {"$imagepolicy": "flux-system:home-assistant-policy:tag"}
+      tag: "2025.8.2" # {"$imagepolicy": "flux-system:home-assistant-policy:tag"}
       imagePullPolicy: IfNotPresent
     persistence:
       enabled: true
