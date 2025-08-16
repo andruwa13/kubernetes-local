@@ -14,10 +14,8 @@
         "clusterVersion:\\s*(?<currentValue>v\\d+\\.\\d+\\.\\d+)-cluster"
       ],
       "depNameTemplate": "VictoriaMetrics/VictoriaMetrics",
-      "datasourceTemplate": "github-releases",
-      "currentValueTemplate": "{{{replace '-cluster$' '' currentValue}}}",
-      "newValueTemplate": "{{{newValue}}}-cluster",
-      "description": "Update VictoriaMetrics clusterVersion with -cluster suffix"
+      "datasourceTemplate": "github-tags",
+      "description": "Track VictoriaMetrics clusterVersion (manual suffix update needed)"
     },
     {
       "fileMatch": ["^.*values.*\\.ya?ml$", "^.*\\.ya?ml$"],
