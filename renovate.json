@@ -1,44 +1,68 @@
 {
-  "extends": [
-    "config:recommended"
-  ],
-  "enabledManagers": [
-    "flux",
-    "helm-values"
-  ],
+  "extends": ["config:base"],
+  "enabledManagers": ["flux", "helm-values", "regex"],
   "flux": {
-    "managerFilePatterns": [
-      "/^.*\\.ya?ml$/"
-    ]
+    "fileMatch": ["^.*\\.ya?ml$"]
   },
   "helm-values": {
-    "managerFilePatterns": [
-      "/^.*values.*\\.ya?ml$/"
-    ]
+    "fileMatch": ["^.*values.*\\.ya?ml$"]
   },
-  "packageRules": [
+  "regexManagers": [
     {
-      "matchManagers": [
-        "flux"
+      "fileMatch": ["^.*\\.ya?ml$"],
+      "matchStrings": [
+        "clusterVersion:\\s*(?<currentValue>v[0-9]+\\.[0-9]+\\.[0-9]+-cluster)"
       ],
-      "matchUpdateTypes": [
-        "minor",
-        "patch"
-      ],
-      "automerge": true,
-      "automergeType": "pr",
-      "platformAutomerge": true
+      "depNameTemplate": "VictoriaMetrics/VictoriaMetrics",
+      "datasourceTemplate": "github-releases",
+      "extractVersionTemplate": "^v(?<version>.*)$",
+      "description": "Update VictoriaMetrics cluster versions"
     },
     {
-      "matchManagers": [
-        "helm-values"
+      "fileMatch": ["^.*values.*\\.ya?ml$", "^.*\\.ya?ml$"],
+      "matchStrings": [
+        "# renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)\\s*\\n\\s*tag:\\s*[\"']?(?<currentValue>[^\"'\\s]+)[\"']?",
+        "# renovate: image=(?<depName>.*?)\\s*\\n\\s*tag:\\s*[\"']?(?<currentValue>[^\"'\\s]+)[\"']?"
       ],
-      "matchUpdateTypes": [
-        "patch"
-      ],
-      "automerge": true
+      "datasourceTemplate": "docker",
+      "description": "Update Docker images with renovate comments"
     }
   ],
-  "prConcurrentLimit": 3,
-  "prHourlyLimit": 2
+  "packageRules": [
+    {
+      "matchManagers": ["flux"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "automerge": true,
+      "automergeType": "pr",
+      "platformAutomerge": true,
+      "minimumReleaseAge": "3 days"
+    },
+    {
+      "matchManagers": ["helm-values"],
+      "matchUpdateTypes": ["patch"],
+      "automerge": true,
+      "minimumReleaseAge": "3 days"
+    },
+    {
+      "matchManagers": ["helm-values"],
+      "matchUpdateTypes": ["minor", "major"],
+      "automerge": false
+    },
+    {
+      "matchManagers": ["regex"],
+      "matchDepNames": ["VictoriaMetrics/VictoriaMetrics"],
+      "automerge": false,
+      "description": "Manual review for VictoriaMetrics versions"
+    },
+    {
+      "matchManagers": ["regex"],
+      "matchDatasources": ["docker"],
+      "matchUpdateTypes": ["patch"],
+      "automerge": true,
+      "minimumReleaseAge": "2 days"
+    }
+  ],
+  "prConcurrentLimit": 5,
+  "prHourlyLimit": 3,
+  "schedule": ["before 3am on Monday"]
 }
