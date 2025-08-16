@@ -8,6 +8,7 @@ variables:
   LOG_FILE: renovate-log.ndjson
   LOG_FILE_LEVEL: debug
   CI_RENOVATE_IMAGE: ghcr.io/renovatebot/renovate:41
+  RENOVATE_EXTRA_FLAGS: "--autodiscover --autodiscover-filter=${CI_PROJECT_PATH}"
 
 .renovate:
   cache:
