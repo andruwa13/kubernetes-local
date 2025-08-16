@@ -15,7 +15,8 @@
       ],
       "depNameTemplate": "VictoriaMetrics/VictoriaMetrics",
       "datasourceTemplate": "github-releases",
-      "description": "Update VictoriaMetrics cluster versions"
+      "versioning": "loose",
+      "description": "Update VictoriaMetrics cluster versions with -cluster"
     },
     {
       "fileMatch": ["^.*values.*\\.ya?ml$", "^.*\\.ya?ml$"],
