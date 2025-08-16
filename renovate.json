@@ -11,13 +11,24 @@
     {
       "fileMatch": ["^.*\\.ya?ml$"],
       "matchStrings": [
-        "clusterVersion:\\s*[\"']?(?<currentValue>v[0-9]+\\.[0-9]+\\.[0-9]+-cluster)[\"']?",
-        "version:\\s*[\"']?(?<currentValue>v[0-9]+\\.[0-9]+\\.[0-9]+-cluster)[\"']?"
+        "clusterVersion:\\s*[\"']?(?<currentValue>v[0-9]+\\.[0-9]+\\.[0-9]+)-cluster[\"']?",
+        "version:\\s*[\"']?(?<currentValue>v[0-9]+\\.[0-9]+\\.[0-9]+)-cluster[\"']?"
       ],
       "depNameTemplate": "VictoriaMetrics/VictoriaMetrics",
       "datasourceTemplate": "github-releases",
-      "extractVersionTemplate": "^(?<version>v[0-9]+\\.[0-9]+\\.[0-9]+)-cluster$",
-      "description": "Update VictoriaMetrics cluster versions with -cluster suffix"
+      "currentValueTemplate": "{{{replace '-cluster$' '' currentValue}}}",
+      "newValueTemplate": "{{{newValue}}}-cluster",
+      "description": "Update VictoriaMetrics cluster versions - converts between -cluster suffix and GitHub releases"
+    },
+    {
+      "fileMatch": ["^.*\\.ya?ml$"],
+      "matchStrings": [
+        "# renovate: datasource=github-releases depName=(?<depName>VictoriaMetrics\\/VictoriaMetrics)\\s*\\n.*?(?:version|clusterVersion):\\s*[\"']?(?<currentValue>v[0-9]+\\.[0-9]+\\.[0-9]+)-cluster[\"']?"
+      ],
+      "datasourceTemplate": "github-releases",
+      "currentValueTemplate": "{{{replace '-cluster$' '' currentValue}}}",
+      "newValueTemplate": "{{{newValue}}}-cluster",
+      "description": "Update VictoriaMetrics versions with explicit renovate comment - handles -cluster suffix"
     },
     {
       "fileMatch": ["^.*values.*\\.ya?ml$", "^.*\\.ya?ml$"],
@@ -28,15 +39,6 @@
       ],
       "datasourceTemplate": "docker",
       "description": "Update Docker images with renovate comments"
-    },
-    {
-      "fileMatch": ["^.*\\.ya?ml$"],
-      "matchStrings": [
-        "# renovate: datasource=github-releases depName=(?<depName>VictoriaMetrics\\/VictoriaMetrics)\\s*\\n.*?(?:version|clusterVersion):\\s*[\"']?(?<currentValue>v[0-9]+\\.[0-9]+\\.[0-9]+-cluster)[\"']?"
-      ],
-      "datasourceTemplate": "github-releases",
-      "extractVersionTemplate": "^(?<version>v[0-9]+\\.[0-9]+\\.[0-9]+)-cluster$",
-      "description": "Update VictoriaMetrics versions with explicit renovate comment"
     }
   ],
   "packageRules": [
