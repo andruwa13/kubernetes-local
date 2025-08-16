@@ -8,7 +8,7 @@ metadata:
     app.kubernetes.io/instance: dev
 spec:
   retentionPeriod: "30d"
-  # Renovate буде відстежувати цю версію та пропонувати оновлення
+  # renovate: datasource=github-releases depName=VictoriaMetrics/VictoriaMetrics
   clusterVersion: v1.107.0-cluster
   replicationFactor: 1
   
