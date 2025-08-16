@@ -15,8 +15,6 @@
       ],
       "depNameTemplate": "VictoriaMetrics/VictoriaMetrics",
       "datasourceTemplate": "github-releases",
-      "extractVersionTemplate": "^v(?<version>.*)$",
-      "replaceString": "clusterVersion: v{{newVersion}}-cluster",
       "description": "Update VictoriaMetrics cluster versions"
     },
     {
