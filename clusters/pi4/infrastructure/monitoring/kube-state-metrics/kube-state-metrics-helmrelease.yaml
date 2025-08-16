@@ -25,7 +25,7 @@ spec:
   # Додаткові налаштування, якщо потрібно
   values:
     image:
-      tag: "v2.16.0" # {"$imagepolicy": "flux-system:kube-state-metrics-policy:tag"}
+      tag: "v2.16.0"
       imagePullPolicy: IfNotPresent
     nodeSelector:
       kubernetes.io/hostname: server
