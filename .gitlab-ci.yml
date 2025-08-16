@@ -1,0 +1,13 @@
+stages:
+  - renovate
+
+renovate:
+  image: renovate/renovate:latest
+  stage: renovate
+  variables:
+    GITLAB_TOKEN: "$CI_JOB_TOKEN"
+    RENOVATE_CONFIG_FILE: "renovate.json"
+  script:
+    - renovate
+  only:
+    - schedules

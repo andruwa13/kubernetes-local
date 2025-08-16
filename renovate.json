@@ -1,0 +1,27 @@
+{
+    "extends": ["config:base"],
+    "enabledManagers": ["flux", "helm-values"],
+    "flux": {
+      "fileMatch": ["^.*\\.ya?ml$"]
+    },
+    "helm-values": {
+      "fileMatch": ["^.*values.*\\.ya?ml$"]
+    },
+    "packageRules": [
+      {
+        "matchManagers": ["flux"],
+        "matchUpdateTypes": ["minor", "patch"],
+        "automerge": true,
+        "automergeType": "pr",
+        "platformAutomerge": true
+      },
+      {
+        "matchManagers": ["helm-values"],
+        "matchUpdateTypes": ["patch"],
+        "automerge": true
+      }
+    ],
+    "prConcurrentLimit": 3,
+    "prHourlyLimit": 2
+  }
+  
