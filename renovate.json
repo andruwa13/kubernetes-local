@@ -62,6 +62,5 @@
     }
   ],
   "prConcurrentLimit": 5,
-  "prHourlyLimit": 3,
-  "schedule": ["before 3am on Monday"]
+  "prHourlyLimit": 3
 }
