@@ -7,6 +7,7 @@ renovate:
   variables:
     GITLAB_TOKEN: "$CI_JOB_TOKEN"
     RENOVATE_CONFIG_FILE: "renovate.json"
+    RENOVATE_TOKEN: "$RENOVATE_TOKEN"
   script:
     - renovate
   only:
