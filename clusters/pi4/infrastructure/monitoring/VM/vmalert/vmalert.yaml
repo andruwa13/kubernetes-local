@@ -1,0 +1,22 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMAlert
+metadata:
+  name: dev
+  namespace: vm
+spec:
+  image:
+    tag: v1.107.0
+  datasource:
+    url: "http://vmselect-dev.vm.svc:8481/select/0/prometheus"
+  remoteWrite:
+    url: "http://vminsert-dev.vm.svc:8480/insert/0/prometheus"
+  remoteRead:
+    url: "http://vmselect-dev.vm.svc:8481/select/0/prometheus"
+  notifier:
+    url: "http://vmalertmanager-dev.vm.svc:9093/alertmanager"
+  evaluationInterval: "30s"
+  selectAllByDefault: true
+  # for accessing to vmalert via vmauth with path prefix
+  extraArgs:
+    http.pathPrefix: /vmalert
+    external.url: "https://vmauth-dev.vm.192.168.0.91.nip.io/vmalert"

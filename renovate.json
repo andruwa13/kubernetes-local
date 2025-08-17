@@ -20,11 +20,12 @@
     {
       "fileMatch": ["^.*\\.ya?ml$"],
       "matchStrings": [
-        "kind: VMAgent[\\s\\S]*?image:[\\s\\S]*?tag:\\s*(?<currentValue>v\\d+\\.\\d+\\.\\d+)"
+        "kind: VMAgent[\\s\\S]*?image:[\\s\\S]*?tag:\\s*(?<currentValue>v\\d+\\.\\d+\\.\\d+)",
+        "kind: VMAlert[\\s\\S]*?image:[\\s\\S]*?tag:\\s*(?<currentValue>v\\d+\\.\\d+\\.\\d+)"
       ],
       "depNameTemplate": "VictoriaMetrics/VictoriaMetrics",
       "datasourceTemplate": "github-releases",
-      "description": "Update VMAgent image tag version"
+      "description": "Update VMAgent/VMAlert image tag version"
     },
     {
       "fileMatch": ["^.*values.*\\.ya?ml$", "^.*\\.ya?ml$"],
@@ -64,7 +65,10 @@
     },
     {
       "matchManagers": ["regex"],
-      "matchFileNames": ["**/vmagent.yaml"],
+      "matchFileNames": [
+        "**/vmagent.yaml",
+        "**/vmalert.yaml"
+      ],
       "matchDepNames": ["VictoriaMetrics/VictoriaMetrics"],
       "automerge": false,
       "minimumReleaseAge": "3 days",
