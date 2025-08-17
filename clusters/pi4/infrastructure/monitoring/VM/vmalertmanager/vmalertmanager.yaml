@@ -9,7 +9,7 @@ spec:
     matchLabels:
       alertmanager: dev
   image:
-    tag: v0.27.0
+    tag: v0.28.1
   externalURL: https://vmauth-dev.vm.192.168.0.91.nip.io/alertmanager
   routePrefix: /alertmanager
   nodeSelector:
