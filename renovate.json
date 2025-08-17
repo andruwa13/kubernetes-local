@@ -97,6 +97,6 @@
       "minimumReleaseAge": "2 days"
     }
   ],
-  "prConcurrentLimit": 5,
-  "prHourlyLimit": 3
+  "prConcurrentLimit": 7,
+  "prHourlyLimit": 9
 }
