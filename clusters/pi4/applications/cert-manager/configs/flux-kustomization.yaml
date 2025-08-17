@@ -5,7 +5,7 @@ metadata:
   namespace: flux-system
 spec:
   interval: 5m
-  path: "./clusters/pi4/applications/cert-manager/configs"
+  path: "../configs/"
   prune: true
   sourceRef:
     kind: GitRepository
