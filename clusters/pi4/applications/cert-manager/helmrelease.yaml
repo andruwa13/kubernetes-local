@@ -1,3 +1,4 @@
+# Встановлення CRDs через HelmRelease
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
@@ -27,7 +28,8 @@ spec:
   dependsOn: []
 
 ---
-
+# infrastructure/cert-manager/cert-manager.yaml
+# Основний cert-manager HelmRelease з покращеним управлінням залежностями
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
@@ -43,10 +45,14 @@ spec:
         kind: HelmRepository
         name: jetstack
         namespace: flux-system
-  # Чекаємо поки CRDs будуть встановлені
+  # Чекаємо поки CRDs будуть встановлені та зареєстровані
   dependsOn:
     - name: cert-manager-crds
       namespace: cert-manager
+  # Додаємо додатковий час для реєстрації CRDs
+  timeout: 10m
+  # Більше спроб у разі тимчасових помилок
+  maxHistory: 10
   values:
     # CRDs вже встановлені окремо
     installCRDs: false
@@ -54,15 +60,6 @@ spec:
     ingressShim:
       defaultIssuerKind: "ClusterIssuer"
       defaultIssuerName: "letsencrypt-prod"
-  # Додаткові налаштування для правильної роботи
-  postRenderers:
-    - kustomize:
-        patches:
-          # Додаємо лейбл до namespace (аналог kubectl label у твоєму helmfile)
-          - target:
-              kind: Namespace
-              name: cert-manager
-            patch: |
-              - op: add
-                path: /metadata/labels/cert-manager.io~1disable-validation
-                value: "true"
+    # Додаткові налаштування для стабільності
+    webhook:
+      timeoutSeconds: 30
