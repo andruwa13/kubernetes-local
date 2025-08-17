@@ -30,7 +30,7 @@ spec:
     - name: infra-controllers  # Залежність від контролерів
   interval: 1h
   retryInterval: 1m
-  timeout: 5m
+  timeout: 2m
   sourceRef:
     kind: GitRepository
     name: flux-system
