@@ -20,11 +20,29 @@
     {
       "fileMatch": ["^.*\\.ya?ml$"],
       "matchStrings": [
-        "kind:\\s*(?<kind>VM(?:Agent|Alert|Cluster))[\\s\\S]*?image:[\\s\\S]*?tag:\\s*(?<currentValue>v\\d+\\.\\d+\\.\\d+)"
+        "kind:\\s*VMAgent[\\s\\S]*?image:[\\s\\S]*?tag:\\s*(?<currentValue>v\\d+\\.\\d+\\.\\d+)"
       ],
-      "depNameTemplate": "victoriametrics/${{kind | lower}}",
+      "depNameTemplate": "victoriametrics/vmagent",
       "datasourceTemplate": "github-releases",
-      "description": "Update image tag specifically for detected VictoriaMetrics resource"
+      "description": "Update image tag for VMAgent"
+    },
+    {
+      "fileMatch": ["^.*\\.ya?ml$"],
+      "matchStrings": [
+        "kind:\\s*VMAlert[\\s\\S]*?image:[\\s\\S]*?tag:\\s*(?<currentValue>v\\d+\\.\\d+\\.\\d+)"
+      ],
+      "depNameTemplate": "victoriametrics/vmalert",
+      "datasourceTemplate": "github-releases",
+      "description": "Update image tag for VMAlert"
+    },
+    {
+      "fileMatch": ["^.*\\.ya?ml$"],
+      "matchStrings": [
+        "kind:\\s*VMCluster[\\s\\S]*?image:[\\s\\S]*?tag:\\s*(?<currentValue>v\\d+\\.\\d+\\.\\d+)"
+      ],
+      "depNameTemplate": "victoriametrics/vmcluster",
+      "datasourceTemplate": "github-releases",
+      "description": "Update image tag for VMCluster"
     },
     {
       "fileMatch": ["^.*values.*\\.ya?ml$", "^.*\\.ya?ml$"],
