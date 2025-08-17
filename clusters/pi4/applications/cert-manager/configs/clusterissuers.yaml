@@ -1,0 +1,23 @@
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-staging-dev
+spec:
+  acme:
+    email: andruwa13@gmail.com
+    # Staging сервер для dev середовища
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
+    privateKeySecretRef:
+      name: letsencrypt-staging-dev
+    solvers:
+    - http01:
+        ingress:
+          class: nginx
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: selfsigned-dev
+spec:
+  selfSigned: {}
