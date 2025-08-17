@@ -4,8 +4,6 @@ metadata:
   name: ingress-nginx
   namespace: ingress-nginx
 spec:
-  install:
-    createNamespace: true
   releaseName: ingress-nginx
   chart:
     spec:
@@ -19,6 +17,7 @@ spec:
   timeout: 5m
   # Автооновлення для dev середовища
   install:
+    createNamespace: true
     remediation:
       retries: 3
   upgrade:
