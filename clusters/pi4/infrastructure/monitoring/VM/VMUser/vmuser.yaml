@@ -1,0 +1,49 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMUser
+metadata:
+  name: dev
+  namespace: vm
+spec:
+  name: dev
+  username: dev
+  generatePassword: true
+  targetRefs:
+    - crd:
+        kind: VMAgent
+        name: dev
+        namespace: vm
+      paths:
+        - "/vmagent"
+        - "/vmagent/.*"
+    - crd:
+        kind: VMAlertmanager
+        name: dev
+        namespace: vm
+      paths:
+        - "/alertmanager"
+        - "/alertmanager/.*"
+    - crd:
+        kind: VMAlert
+        name: dev
+        namespace: vm
+      paths:
+        - "/vmalert"
+        - "/vmalert/.*"
+    - crd:
+        kind: VMCluster/vmselect
+        name: dev
+        namespace: vm
+      target_path_suffix: "/select/0"
+      paths:
+        - "/vmui"
+        - "/vmui/.*"
+        - "/select/0/prometheus"
+        - "/prometheus/api/v1/query"
+        - "/prometheus/api/v1/query_range"
+        - "/prometheus/api/v1/series"
+        - "/prometheus/api/v1/status/.*"
+        - "/prometheus/api/v1/label/"
+        - "/prometheus/api/v1/label/[^/]+/values"
+    - static:
+        url: "http://vlogs-dev.vm.svc:9428"
+      paths: ["/"]
