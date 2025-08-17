@@ -20,35 +20,18 @@
     {
       "fileMatch": ["^.*\\.ya?ml$"],
       "matchStrings": [
-        "kind:\\s*VMAgent[\\s\\S]*?image:[\\s\\S]*?tag:\\s*(?<currentValue>v\\d+\\.\\d+\\.\\d+)"
+        "kind: VMAgent[\\s\\S]*?image:[\\s\\S]*?tag:\\s*(?<currentValue>v\\d+\\.\\d+\\.\\d+)",
+        "kind: VMAlert[\\s\\S]*?image:[\\s\\S]*?tag:\\s*(?<currentValue>v\\d+\\.\\d+\\.\\d+)"
       ],
-      "depNameTemplate": "victoriametrics/vmagent",
+      "depNameTemplate": "VictoriaMetrics/VictoriaMetrics",
       "datasourceTemplate": "github-releases",
-      "description": "Update image tag for VMAgent"
-    },
-    {
-      "fileMatch": ["^.*\\.ya?ml$"],
-      "matchStrings": [
-        "kind:\\s*VMAlert[\\s\\S]*?image:[\\s\\S]*?tag:\\s*(?<currentValue>v\\d+\\.\\d+\\.\\d+)"
-      ],
-      "depNameTemplate": "victoriametrics/vmalert",
-      "datasourceTemplate": "github-releases",
-      "description": "Update image tag for VMAlert"
-    },
-    {
-      "fileMatch": ["^.*\\.ya?ml$"],
-      "matchStrings": [
-        "kind:\\s*VMCluster[\\s\\S]*?image:[\\s\\S]*?tag:\\s*(?<currentValue>v\\d+\\.\\d+\\.\\d+)"
-      ],
-      "depNameTemplate": "victoriametrics/vmcluster",
-      "datasourceTemplate": "github-releases",
-      "description": "Update image tag for VMCluster"
+      "description": "Update VMAgent/VMAlert image tag version"
     },
     {
       "fileMatch": ["^.*values.*\\.ya?ml$", "^.*\\.ya?ml$"],
       "matchStrings": [
-        "# renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)\\s*\\ntag:\\s*[\"']?(?<currentValue>[^\"'\\s]+)[\"']?",
-        "# renovate: image=(?<depName>.*?)\\s*\\ntag:\\s*[\"']?(?<currentValue>[^\"'\\s]+)[\"']?"
+        "# renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)\\s*\\n\\s*tag:\\s*[\"']?(?<currentValue>[^\"'\\s]+)[\"']?",
+        "# renovate: image=(?<depName>.*?)\\s*\\n\\s*tag:\\s*[\"']?(?<currentValue>[^\"'\\s]+)[\"']?"
       ],
       "datasourceTemplate": "docker",
       "description": "Update Docker images with renovate comments"
