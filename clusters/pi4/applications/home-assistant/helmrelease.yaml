@@ -4,8 +4,6 @@ metadata:
   name: home-assistant
   namespace: home-assistant
 spec:
-  install:
-    createNamespace: true
   releaseName: home-assistant
   chart:
     spec:
@@ -18,6 +16,7 @@ spec:
   interval: 1m
   # Автооновлення для dev середовища
   install:
+    createNamespace: true
     remediation:
       retries: 3
   upgrade:
