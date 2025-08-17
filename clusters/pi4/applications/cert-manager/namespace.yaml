@@ -1,8 +1,0 @@
-# Створюємо namespace для cert-manager
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: cert-manager
-  labels:
-    # Це важливо для cert-manager - відключаємо валідацію веб-хуків
-    cert-manager.io/disable-validation: "true"
