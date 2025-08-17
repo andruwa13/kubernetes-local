@@ -9,6 +9,42 @@
   },
   "regexManagers": [
     {
+      "fileMatch": ["vmagent.yaml"],
+      "matchStrings": [
+        "tag:\\s?(?<currentValue>[^\\s]+)"
+      ],
+      "datasourceTemplate": "docker",
+      "depNameTemplate": "victoriametrics/vmagent",
+      "versioningTemplate": "docker"
+    },
+    {
+      "fileMatch": ["vmalert.yaml"],
+      "matchStrings": [
+        "tag:\\s?(?<currentValue>[^\\s]+)"
+      ],
+      "datasourceTemplate": "docker",
+      "depNameTemplate": "victoriametrics/vmalert",
+      "versioningTemplate": "docker"
+    },
+    {
+      "fileMatch": ["vmalertmanager.yaml"],
+      "matchStrings": [
+        "tag:\\s?(?<currentValue>[^\\s]+)"
+      ],
+      "datasourceTemplate": "docker",
+      "depNameTemplate": "prom/alertmanager",
+      "versioningTemplate": "docker"
+    },
+    {
+      "fileMatch": ["vmauth.yaml"],
+      "matchStrings": [
+        "tag:\\s?(?<currentValue>[^\\s]+)"
+      ],
+      "datasourceTemplate": "docker",
+      "depNameTemplate": "victoriametrics/vmauth",
+      "versioningTemplate": "docker"
+    },
+    {
       "fileMatch": ["^.*\\.ya?ml$"],
       "matchStrings": [
         "clusterVersion:\\s*(?<currentValue>v\\d+\\.\\d+\\.\\d+)-cluster"
@@ -18,21 +54,10 @@
       "description": "Track VictoriaMetrics clusterVersion (manual suffix update needed)"
     },
     {
-      "fileMatch": ["^.*\\.ya?ml$"],
-      "matchStrings": [
-        "kind: VMAgent[\\s\\S]*?image:[\\s\\S]*?tag:\\s*(?<currentValue>v\\d+\\.\\d+\\.\\d+)",
-        "kind: VMAlert[\\s\\S]*?image:[\\s\\S]*?tag:\\s*(?<currentValue>v\\d+\\.\\d+\\.\\d+)",
-        "kind: VMAlertmanager[\\s\\S]*?image:[\\s\\S]*?tag:\\s*(?<currentValue>v\\d+\\.\\d+\\.\\d+)"
-      ],
-      "depNameTemplate": "VictoriaMetrics/VictoriaMetrics",
-      "datasourceTemplate": "github-releases",
-      "description": "Update VMAgent/VMAlert/VMAlertmanager image tag version"
-    },
-    {
       "fileMatch": ["^.*values.*\\.ya?ml$", "^.*\\.ya?ml$"],
       "matchStrings": [
-        "# renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)\\s*\\n\\s*tag:\\s*[\"']?(?<currentValue>[^\"'\\s]+)[\"']?",
-        "# renovate: image=(?<depName>.*?)\\s*\\n\\s*tag:\\s*[\"']?(?<currentValue>[^\"'\\s]+)[\"']?"
+        "# renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)\\s*\\ntag:\\s*[\"']?(?<currentValue>[^\"'\\s]+)[\"']?",
+        "# renovate: image=(?<depName>.*?)\\s*\\ntag:\\s*[\"']?(?<currentValue>[^\"'\\s]+)[\"']?"
       ],
       "datasourceTemplate": "docker",
       "description": "Update Docker images with renovate comments"
@@ -63,18 +88,6 @@
       "matchDepNames": ["VictoriaMetrics/VictoriaMetrics"],
       "automerge": false,
       "description": "Manual review for VictoriaMetrics versions"
-    },
-    {
-      "matchManagers": ["regex"],
-      "matchFileNames": [
-        "**/vmagent.yaml",
-        "**/vmalert.yaml",
-        "**/vmalertmanager.yaml"
-      ],
-      "matchDepNames": ["VictoriaMetrics/VictoriaMetrics"],
-      "automerge": false,
-      "minimumReleaseAge": "3 days",
-      "description": "VMAgent/VMAlert/VMAlertmanager version updates with shorter release age"
     },
     {
       "matchManagers": ["regex"],
