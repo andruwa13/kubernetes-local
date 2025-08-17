@@ -1,0 +1,25 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMAuth
+metadata:
+  name: dev
+  namespace: vm
+  labels:
+    monitoring: enabled
+spec:
+  image:
+    tag: v1.107.0
+  selectAllByDefault: true
+  userNamespaceSelector: {}
+  userSelector: {}
+  ingress:
+    tlsSecretName: vmauth-tls
+    class_name: nginx
+    annotations:
+      cert-manager.io/cluster-issuer: my-ca-issuer
+      nginx.ingress.kubernetes.io/proxy-read-timeout: "1200"
+      nginx.ingress.kubernetes.io/proxy-send-timeout: "1200"
+      nginx.ingress.kubernetes.io/proxy-body-size: "550m"
+      forecastle.stakater.com/expose: "true"
+    host: vmauth-dev.vm.192.168.0.91.nip.io
+    tlsHosts:
+      - vmauth-dev.vm.192.168.0.91.nip.io
