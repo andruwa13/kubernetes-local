@@ -18,6 +18,15 @@
       "description": "Track VictoriaMetrics clusterVersion (manual suffix update needed)"
     },
     {
+      "fileMatch": ["^.*\\.ya?ml$"],
+      "matchStrings": [
+        "kind: VMAgent[\\s\\S]*?image:[\\s\\S]*?tag:\\s*(?<currentValue>v\\d+\\.\\d+\\.\\d+)"
+      ],
+      "depNameTemplate": "VictoriaMetrics/VictoriaMetrics",
+      "datasourceTemplate": "github-releases",
+      "description": "Update VMAgent image tag version"
+    },
+    {
       "fileMatch": ["^.*values.*\\.ya?ml$", "^.*\\.ya?ml$"],
       "matchStrings": [
         "# renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)\\s*\\n\\s*tag:\\s*[\"']?(?<currentValue>[^\"'\\s]+)[\"']?",
@@ -52,6 +61,14 @@
       "matchDepNames": ["VictoriaMetrics/VictoriaMetrics"],
       "automerge": false,
       "description": "Manual review for VictoriaMetrics versions"
+    },
+    {
+      "matchManagers": ["regex"],
+      "matchFileNames": ["**/vmagent.yaml"],
+      "matchDepNames": ["VictoriaMetrics/VictoriaMetrics"],
+      "automerge": false,
+      "minimumReleaseAge": "3 days",
+      "description": "VMAgent version updates with shorter release age"
     },
     {
       "matchManagers": ["regex"],
