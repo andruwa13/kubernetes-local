@@ -7,7 +7,7 @@ metadata:
     forecastle.stakater.com/expose: "true"
 spec:
   image:
-    tag: v1.107.0
+    tag: v1.123.0
   selectAllByDefault: true
   remoteWrite:
     - url: "http://vminsert-dev.vm.svc:8480/insert/0/prometheus/api/v1/write"
