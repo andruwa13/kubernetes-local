@@ -1,0 +1,22 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMAlertmanager
+metadata:
+  name: dev
+  namespace: vm
+spec:
+  selectAllByDefault: true
+  configSelector:
+    matchLabels:
+      alertmanager: dev
+  image:
+    tag: v0.27.0
+  externalURL: https://vmauth-dev.vm.192.168.0.91.nip.io/alertmanager
+  routePrefix: /alertmanager
+  nodeSelector:
+      kubernetes.io/hostname: server
+  storage:
+    volumeClaimTemplate:
+      spec:
+        resources:
+          requests:
+            storage: 2Gi
