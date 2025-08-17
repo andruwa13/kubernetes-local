@@ -4,6 +4,8 @@ metadata:
   name: home-assistant
   namespace: home-assistant
 spec:
+  install:
+    createNamespace: true
   releaseName: home-assistant
   chart:
     spec:
