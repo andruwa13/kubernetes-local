@@ -11,7 +11,7 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ./controllers
+  path: ./clusters/pi4/applications/cert-manager/controllers
   prune: true
   wait: true  # Важливо: чекає готовності всіх ресурсів
   healthChecks:
@@ -34,5 +34,5 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ./configs
+  path: ./clusters/pi4/applications/cert-manager/configs
   prune: true
