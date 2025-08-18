@@ -94,8 +94,8 @@ spec:
           datasource: VictoriaMetrics
       k3s:
         k3s-monitoring:
-          gnetId: 12410
-          revision: 3
+          gnetId: 12425
+          revision: 1
           datasource: VictoriaMetrics
       victoriametrics:
         victoriametrics-cluster:
@@ -108,7 +108,7 @@ spec:
           revision: 1
           datasource: VictoriaMetrics
       fluxcd:
-        flux-gitops:
-          gnetId: 14163
+        Flux2:
+          gnetId: 16714
           revision: 1
           datasource: VictoriaMetrics
