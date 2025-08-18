@@ -87,12 +87,28 @@ spec:
               path: /var/lib/grafana/dashboards/victoriametrics
 
     dashboards:
+      ingress-nginx:
+        nginx-ingress:
+          gnetId: 9614
+          revision: 1
+          datasource: VictoriaMetrics
+      k3s:
+        k3s-monitoring:
+          gnetId: 12410
+          revision: 3
+          datasource: VictoriaMetrics
       victoriametrics:
         victoriametrics-cluster:
           gnetId: 11176
           revision: 18
           datasource: VictoriaMetrics
-        kubernetes-monitoring:
-          gnetId: 14205
+      certmanager:
+        cert-manager:
+          gnetId: 11001
+          revision: 1
+          datasource: VictoriaMetrics
+      fluxcd:
+        flux-gitops:
+          gnetId: 14163
           revision: 1
           datasource: VictoriaMetrics
