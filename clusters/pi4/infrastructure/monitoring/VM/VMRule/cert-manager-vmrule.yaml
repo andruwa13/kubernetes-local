@@ -1,0 +1,42 @@
+---
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMRule
+metadata:
+  name: cert-manager-alerts
+  namespace: cert-manager
+spec:
+  groups:
+    - name: cert-manager
+      rules:
+        - alert: CertificateExpirySoon
+          expr: |
+            certmanager_certificate_expiration_timestamp_seconds{} - time() < 7 * 24 * 3600
+          for: 1h
+          labels:
+            severity: warning
+          annotations:
+            description: "Certificate {{ $labels.name }} in namespace {{ $labels.namespace }} expires in less than 7 days"
+            summary: "Certificate expiring soon"
+            runbookUrl: "https://runbooks.prometheus-operator.dev/runbooks/certificate-expiry-soon"
+
+        - alert: CertificateNotReady
+          expr: |
+            certmanager_certificate_ready_status{condition="False"} == 1
+          for: 10m
+          labels:
+            severity: critical
+          annotations:
+            description: "Certificate {{ $labels.name }} in namespace {{ $labels.namespace }} is not ready"
+            summary: "Certificate not ready"
+            runbookUrl: "https://runbooks.prometheus-operator.dev/runbooks/certificate-not-ready"
+
+        - alert: CertManagerReconcileFailed
+          expr: |
+            rate(certmanager_controller_sync_error_total[5m]) > 0
+          for: 10m
+          labels:
+            severity: critical
+          annotations:
+            description: "cert-manager is failing to reconcile certificates"
+            summary: "Certificate reconciliation failures"
+            runbookUrl: "https://runbooks.prometheus-operator.dev/runbooks/cert-manager-reconcile-failed"
