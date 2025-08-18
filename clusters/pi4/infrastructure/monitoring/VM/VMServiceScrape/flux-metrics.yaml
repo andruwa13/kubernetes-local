@@ -1,0 +1,21 @@
+apiVersion: monitoring.victoriametrics.com/v1beta1
+kind: VMServiceScrape
+metadata:
+  name: flux-metrics
+  namespace: flux-system
+spec:
+  jobLabel: app.kubernetes.io/name
+  selector:
+    matchExpressions:
+    - key: app.kubernetes.io/part-of
+      operator: In
+      values:
+      - flux
+  namespaceSelector:
+    any: false
+    matchNames:
+    - flux-system
+  endpoints:
+  - port: http-prom
+    path: /metrics
+    interval: 30s
