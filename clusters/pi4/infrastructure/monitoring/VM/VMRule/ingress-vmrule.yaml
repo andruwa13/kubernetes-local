@@ -1,0 +1,48 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMRule
+metadata:
+  name: ingress-monitoring
+  namespace: vm
+spec:
+  groups:
+    - name: ingress-alerts
+      rules:
+        - alert: IngressHighErrorRate
+          expr: sum(rate(nginx_ingress_controller_requests{status=~"5.."}[5m])) by (ingress) / sum(rate(nginx_ingress_controller_requests[5m])) by (ingress) > 0.05
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Ingress {{ $labels.ingress }} has high error rate"
+            description: "Ingress {{ $labels.ingress }} is returning 5xx errors > 5% of the time for 5 minutes"
+            runbookUrl: "https://runbooks.prometheus-operator.dev/runbooks/ingress-high-error-rate"
+
+        - alert: IngressLatencyHigh
+          expr: histogram_quantile(0.95, sum(rate(nginx_ingress_controller_request_duration_seconds_bucket[5m])) by (le, ingress)) > 1
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Ingress {{ $labels.ingress }} has high latency"
+            description: "Ingress {{ $labels.ingress }} has 95th percentile latency > 1s for 5 minutes"
+            runbookUrl: "https://runbooks.prometheus-operator.dev/runbooks/ingress-high-latency"
+
+        - alert: IngressCertificateExpiringSoon
+          expr: nginx_ingress_controller_ssl_expire_time_seconds - time() < 604800
+          for: 1h
+          labels:
+            severity: warning
+          annotations:
+            summary: "Ingress {{ $labels.host }} certificate expiring soon"
+            description: "SSL certificate for {{ $labels.host }} is expiring in less than 7 days"
+            runbookUrl: "https://runbooks.prometheus-operator.dev/runbooks/ingress-certificate-expiring"
+
+        - alert: IngressDown
+          expr: absent(nginx_ingress_controller_config_hash)
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Ingress controller is down"
+            description: "Ingress controller has been down for more than 5 minutes"
+            runbookUrl: "https://runbooks.prometheus-operator.dev/runbooks/ingress-down"
