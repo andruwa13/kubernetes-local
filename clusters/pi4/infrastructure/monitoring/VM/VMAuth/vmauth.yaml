@@ -15,7 +15,8 @@ spec:
     tlsSecretName: vmauth-tls
     class_name: nginx
     annotations:
-      cert-manager.io/cluster-issuer: my-ca-issuer
+      cert-manager.io/cluster-issuer: letsencrypt-staging
+      kubernetes.io/tls-acme: "true"
       nginx.ingress.kubernetes.io/proxy-read-timeout: "1200"
       nginx.ingress.kubernetes.io/proxy-send-timeout: "1200"
       nginx.ingress.kubernetes.io/proxy-body-size: "550m"
