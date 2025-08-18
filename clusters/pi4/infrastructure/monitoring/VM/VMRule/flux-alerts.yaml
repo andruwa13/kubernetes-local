@@ -51,4 +51,3 @@ spec:
       annotations:
         summary: "Helm release failure"
         description: "HelmRelease {{ \$labels.name }} failed in {{ \$labels.namespace }}"
-EOF
