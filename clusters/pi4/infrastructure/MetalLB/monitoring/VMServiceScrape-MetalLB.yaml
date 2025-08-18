@@ -13,7 +13,7 @@ spec:
     matchNames:
       - metallb-system
   endpoints:
-    - port: metrics
+    - port: monitoring
       path: /metrics
       interval: 30s
 ---
@@ -32,6 +32,6 @@ spec:
     matchNames:
       - metallb-system
   endpoints:
-    - port: metrics
+    - port: monitoring
       path: /metrics
       interval: 30s
