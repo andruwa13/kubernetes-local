@@ -1,4 +1,4 @@
-apiVersion: monitoring.victoriametrics.com/v1beta1
+apiVersion: operator.victoriametrics.com/v1beta1
 kind: VMServiceScrape
 metadata:
   name: flux-metrics
