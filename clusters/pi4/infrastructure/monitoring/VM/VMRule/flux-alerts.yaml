@@ -1,0 +1,54 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMRule
+metadata:
+  name: flux-alerts
+  namespace: vm
+spec:
+  groups:
+  - name: flux.rules
+    rules:
+    - alert: FluxComponentDown
+      expr: up{job=~"flux-.*"} == 0
+      for: 5m
+      labels:
+        severity: critical
+      annotations:
+        summary: "Flux component {{ \$labels.job }} is down"
+        description: "Flux component {{ \$labels.job }} has been down for more than 5 minutes."
+
+    - alert: FluxReconciliationFailure
+      expr: increase(gotk_reconcile_condition{type="Ready",status="False"}[5m]) > 0
+      for: 1m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Flux reconciliation failure"
+        description: "{{ \$labels.kind }}/{{ \$labels.name }} reconciliation has been failing."
+
+    - alert: FluxSuspendedResource
+      expr: gotk_suspend_status == 1
+      for: 10m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Flux resource suspended"
+        description: "{{ \$labels.kind }}/{{ \$labels.name }} is suspended for more than 10 minutes."
+
+    - alert: FluxGitRepositoryNotReady
+      expr: gotk_reconcile_condition{type="Ready",status="False",kind="GitRepository"} == 1
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Git repository not ready"
+        description: "GitRepository {{ \$labels.name }} is not ready in {{ \$labels.namespace }}"
+
+    - alert: FluxHelmReleaseFailure  
+      expr: gotk_reconcile_condition{type="Ready",status="False",kind="HelmRelease"} == 1
+      for: 2m
+      labels:
+        severity: critical
+      annotations:
+        summary: "Helm release failure"
+        description: "HelmRelease {{ \$labels.name }} failed in {{ \$labels.namespace }}"
+EOF
