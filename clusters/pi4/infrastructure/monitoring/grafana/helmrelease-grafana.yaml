@@ -35,7 +35,18 @@ spec:
       type: ClusterIP
 
     ingress:
-      enabled: false
+      enabled: true
+      ingressClassName: nginx
+      annotations:
+        cert-manager.io/cluster-issuer: "letsencrypt-staging"   # ваш ClusterIssuer
+      hosts:
+        - grafana.vm.192.168.0.91.nip.io
+      path: /
+      pathType: Prefix
+      tls:
+        - secretName: grafana-tls
+          hosts:
+            - grafana.vm.192.168.0.91.nip.io
 
     nodeSelector:
       kubernetes.io/hostname: server  # відповідно до вашого VMCluster
