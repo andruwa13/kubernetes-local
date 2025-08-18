@@ -1,37 +1,38 @@
+---
 apiVersion: operator.victoriametrics.com/v1beta1
-kind: VMServiceScrape
+kind: VMPodScrape
 metadata:
-  name: metallb-controller-scrape
+  name: metallb-controller-pod-scrape
   namespace: metallb-system
 spec:
+  namespaceSelector:
+    matchNames:
+      - metallb-system
   selector:
     matchLabels:
       app: metallb
       component: controller
-  namespaceSelector:
-    any: false
-    matchNames:
-      - metallb-system
-  endpoints:
+  podMetricsEndpoints:
     - port: monitoring
       path: /metrics
       interval: 30s
+      honorLabels: true
 ---
 apiVersion: operator.victoriametrics.com/v1beta1
-kind: VMServiceScrape
+kind: VMPodScrape
 metadata:
-  name: metallb-speaker-scrape
+  name: metallb-speaker-pod-scrape
   namespace: metallb-system
 spec:
+  namespaceSelector:
+    matchNames:
+      - metallb-system
   selector:
     matchLabels:
       app: metallb
       component: speaker
-  namespaceSelector:
-    any: false
-    matchNames:
-      - metallb-system
-  endpoints:
+  podMetricsEndpoints:
     - port: monitoring
       path: /metrics
       interval: 30s
+      honorLabels: true
