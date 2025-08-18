@@ -10,7 +10,7 @@ spec:
       alertmanager: dev
   image:
     tag: v0.28.1
-  externalURL: https://vmauth-dev.vm.192.168.0.91.nip.io/alertmanager
+  externalURL: https://vmauth-dev.vm.192.168.0.100.nip.io/alertmanager
   routePrefix: /alertmanager
   nodeSelector:
       kubernetes.io/hostname: server

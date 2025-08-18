@@ -21,6 +21,6 @@ spec:
       nginx.ingress.kubernetes.io/proxy-send-timeout: "1200"
       nginx.ingress.kubernetes.io/proxy-body-size: "550m"
       forecastle.stakater.com/expose: "true"
-    host: vmauth-dev.vm.192.168.0.91.nip.io
+    host: vmauth-dev.vm.192.168.0.100.nip.io
     tlsHosts:
-      - vmauth-dev.vm.192.168.0.91.nip.io
+      - vmauth-dev.vm.192.168.0.100.nip.io
