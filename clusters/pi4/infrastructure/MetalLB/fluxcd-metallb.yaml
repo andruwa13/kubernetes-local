@@ -2,7 +2,7 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: metallb-controllers
+  name: metallb-helm
   namespace: flux-system
 spec:
   interval: 1h
@@ -11,7 +11,7 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ./clusters/pi4/applications/cert-manager/controllers
+  path: ./clusters/pi4/infrastructure/MetalLB/helm
   prune: true
   wait: true  # Важливо: чекає готовності всіх ресурсів
   healthChecks:
@@ -27,12 +27,12 @@ metadata:
   namespace: flux-system
 spec:
   dependsOn:
-    - name: metallb-controllers
+    - name: metallb-helm
   interval: 1h
   retryInterval: 1m
   timeout: 2m
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ./clusters/pi4/applications/cert-manager/configs
+  path: ./clusters/pi4/infrastructure/MetalLB/configs
   prune: true
