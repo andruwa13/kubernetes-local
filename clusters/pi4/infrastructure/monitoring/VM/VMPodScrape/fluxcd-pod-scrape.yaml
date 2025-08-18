@@ -1,12 +1,14 @@
 apiVersion: operator.victoriametrics.com/v1beta1
 kind: VMPodScrape
 metadata:
-  name: flux-system
+  name: fluxcd-pod-scrape
   namespace: flux-system
 spec:
   namespaceSelector:
     matchNames:
       - flux-system
+  podMetricsEndpoints:
+    - port: http-prom
   selector:
     matchExpressions:
       - key: app
@@ -18,6 +20,3 @@ spec:
           - notification-controller
           - image-automation-controller
           - image-reflector-controller
-  podMetricsEndpoints:
-    - port: "8080"
-      path: /metrics
