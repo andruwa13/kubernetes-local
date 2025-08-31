@@ -1,15 +1,28 @@
 {
-  "extends": ["config:base"],
-  "enabledManagers": ["flux", "helm-values", "regex"],
+  "extends": [
+    "config:recommended"
+  ],
+  "enabledManagers": [
+    "flux",
+    "helm-values",
+    "custom.regex"
+  ],
   "flux": {
-    "fileMatch": ["^.*\\.ya?ml$"]
+    "managerFilePatterns": [
+      "/^.*\\.ya?ml$/"
+    ]
   },
   "helm-values": {
-    "fileMatch": ["^.*values.*\\.ya?ml$"]
+    "managerFilePatterns": [
+      "/^.*values.*\\.ya?ml$/"
+    ]
   },
-  "regexManagers": [
+  "customManagers": [
     {
-      "fileMatch": ["vmagent.yaml"],
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/vmagent.yaml/"
+      ],
       "matchStrings": [
         "tag:\\s?(?<currentValue>[^\\s]+)"
       ],
@@ -18,7 +31,10 @@
       "versioningTemplate": "docker"
     },
     {
-      "fileMatch": ["vmalert.yaml"],
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/vmalert.yaml/"
+      ],
       "matchStrings": [
         "tag:\\s?(?<currentValue>[^\\s]+)"
       ],
@@ -27,7 +43,10 @@
       "versioningTemplate": "docker"
     },
     {
-      "fileMatch": ["vmalertmanager.yaml"],
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/vmalertmanager.yaml/"
+      ],
       "matchStrings": [
         "tag:\\s?(?<currentValue>[^\\s]+)"
       ],
@@ -36,7 +55,10 @@
       "versioningTemplate": "docker"
     },
     {
-      "fileMatch": ["vmauth.yaml"],
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/vmauth.yaml/"
+      ],
       "matchStrings": [
         "tag:\\s?(?<currentValue>[^\\s]+)"
       ],
@@ -45,7 +67,10 @@
       "versioningTemplate": "docker"
     },
     {
-      "fileMatch": ["^.*\\.ya?ml$"],
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/^.*\\.ya?ml$/"
+      ],
       "matchStrings": [
         "clusterVersion:\\s*(?<currentValue>v\\d+\\.\\d+\\.\\d+)-cluster"
       ],
@@ -54,7 +79,11 @@
       "description": "Track VictoriaMetrics clusterVersion (manual suffix update needed)"
     },
     {
-      "fileMatch": ["^.*values.*\\.ya?ml$", "^.*\\.ya?ml$"],
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/^.*values.*\\.ya?ml$/",
+        "/^.*\\.ya?ml$/"
+      ],
       "matchStrings": [
         "# renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)\\s*\\ntag:\\s*[\"']?(?<currentValue>[^\"'\\s]+)[\"']?",
         "# renovate: image=(?<depName>.*?)\\s*\\ntag:\\s*[\"']?(?<currentValue>[^\"'\\s]+)[\"']?"
@@ -65,34 +94,58 @@
   ],
   "packageRules": [
     {
-      "matchManagers": ["flux"],
-      "matchUpdateTypes": ["minor", "patch"],
+      "matchManagers": [
+        "flux"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ],
       "automerge": true,
       "automergeType": "pr",
       "platformAutomerge": true,
       "minimumReleaseAge": "3 days"
     },
     {
-      "matchManagers": ["helm-values"],
-      "matchUpdateTypes": ["patch"],
+      "matchManagers": [
+        "helm-values"
+      ],
+      "matchUpdateTypes": [
+        "patch"
+      ],
       "automerge": true,
       "minimumReleaseAge": "3 days"
     },
     {
-      "matchManagers": ["helm-values"],
-      "matchUpdateTypes": ["minor", "major"],
+      "matchManagers": [
+        "helm-values"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "major"
+      ],
       "automerge": false
     },
     {
-      "matchManagers": ["regex"],
-      "matchDepNames": ["VictoriaMetrics/VictoriaMetrics"],
+      "matchManagers": [
+        "custom.regex"
+      ],
+      "matchDepNames": [
+        "VictoriaMetrics/VictoriaMetrics"
+      ],
       "automerge": false,
       "description": "Manual review for VictoriaMetrics versions"
     },
     {
-      "matchManagers": ["regex"],
-      "matchDatasources": ["docker"],
-      "matchUpdateTypes": ["patch"],
+      "matchManagers": [
+        "custom.regex"
+      ],
+      "matchDatasources": [
+        "docker"
+      ],
+      "matchUpdateTypes": [
+        "patch"
+      ],
       "automerge": true,
       "minimumReleaseAge": "2 days"
     }
