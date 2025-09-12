@@ -23,7 +23,8 @@ spec:
   values:
     # Встановлення VictoriaMetrics плагіна
     env:
-      GF_INSTALL_PLUGINS: victoriametrics-metrics-datasource
+      env:
+  GF_INSTALL_PLUGINS: victoriametrics-metrics-datasource,victoriametrics-logs-datasource
 
     persistence:
       enabled: true
@@ -71,45 +72,24 @@ spec:
             url: http://vmselect-dev.vm.svc.cluster.local:8481/select/0/prometheus
             isDefault: false
             editable: true
+          
+#          - name: VictoriaLogs
+#            type: victoriametrics-logs-datasource
+#            access: proxy
+#            url: http://vlcluster-dev.vm.svc.cluster.local:9428
+#            isDefault: false
+#            editable: true
 
     # Автоматичне додавання дашбордів
-    dashboardProviders:
-      dashboardproviders.yaml:
-        apiVersion: 1
-        providers:
-          - name: 'victoriametrics'
-            orgId: 1
-            folder: 'VictoriaMetrics'
-            type: file
-            disableDeletion: false
-            editable: true
-            options:
-              path: /var/lib/grafana/dashboards/victoriametrics
+#    dashboardProviders:
+#      dashboardproviders.yaml:
+#        apiVersion: 1
+#        providers:
+#          - name: 'victoriametrics'
+#          folder: 'VictoriaMetrics'
+#            type: file
+#            disableDeletion: false
+#            editable: true
+#            options:
+#              path: /var/lib/grafana/dashboards/victoriametrics
 
-#    dashboards:
-#      ingress-nginx:
-#        nginx-ingress:
-#          gnetId: 9614
-#          revision: 1
-#          datasource: VictoriaMetrics
-#      k3s:
-#        k3s-monitoring:
-#          gnetId: 12425
-#          revision: 1
-#          datasource: VictoriaMetrics
-#      victoriametrics:
-#        victoriametrics-cluster:
-#          gnetId: 11176
-#          revision: 18
-#          datasource: VictoriaMetrics
-#      certmanager:
-#        cert-manager:
-#          gnetId: 11001
-#          revision: 1
-#          datasource: VictoriaMetrics
-#      fluxcd:
-#        Flux2:
-#          gnetId: 16714
-#          revision: 1
-#          datasource: VictoriaMetrics
-#
