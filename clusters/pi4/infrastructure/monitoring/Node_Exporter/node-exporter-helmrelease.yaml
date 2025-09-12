@@ -29,5 +29,5 @@ spec:
     image:
       # Маркер для автооновлення - FluxCD замінить цей тег автоматично
       tag: "v1.9.1" 
-    nodeSelector:
-      kubernetes.io/hostname: server
+#    nodeSelector:
+#      kubernetes.io/hostname: server
