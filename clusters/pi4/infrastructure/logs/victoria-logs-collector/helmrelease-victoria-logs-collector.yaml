@@ -1,0 +1,30 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: victoria-logs-collector
+  namespace: vm
+spec:
+  releaseName: victoria-logs-collector
+  chart:
+    spec:
+      chart: victoria-logs-collector
+      version: "0.0.4" # потрібна реальна версія
+      sourceRef:
+        kind: HelmRepository
+        name: victoriametrics
+        namespace: flux-system
+  interval: 1m
+  values:
+    remoteWrite:
+      - url: "http://vlinsert-dev-logs.vm.svc.cluster.local:9481/internal/insert"
+#    fileLogs:
+#      - path: "/var/lib/rancher/k3s/agent/containerd/containerd.log"
+#    extraVolumeMounts:
+#      - name: containerd-logs
+#        mountPath: /var/lib/rancher/k3s/agent/containerd
+#        readOnly: true
+#    extraVolumes:
+#      - name: containerd-logs
+#        hostPath:
+#          path: /var/lib/rancher/k3s/agent/containerd
+#          type: DirectoryOrCreate
