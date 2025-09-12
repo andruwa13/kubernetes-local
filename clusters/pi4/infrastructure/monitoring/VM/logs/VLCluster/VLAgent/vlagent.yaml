@@ -8,13 +8,42 @@ spec:
   # Налаштування віддалених записів (replication)
   remoteWrite:
     - url: "http://vlinsert-dev-logs.vm.svc.cluster.local:9481/internal/insert"
-  # (Опційно) Налаштування буферизації при недоступності
+  
+  # Конфігурація джерел логів - це критично важливо!
+  config: |
+    # Збирання логів з файлів (якщо логи записуються в файли)
+    file_sd_configs:
+      - files:
+          - "/var/log/*.log"
+          - "/var/log/**/*.log"
+    
+    # Або збирання через syslog
+    syslog:
+      listen_addr: ":514"
+    
+    # Або HTTP endpoint для отримання логів
+    http:
+      listen_addr: ":9429"
+  
+  # Налаштування буферизації при недоступності
   storage:
     volumeClaimTemplate:
       spec:
         resources:
           requests:
             storage: 5Gi
-  # (Опційно) додаткові аргументи vlagent
+            
+  # Додаткові аргументи vlagent
   extraArgs:
     insert.maxLineSizeBytes: "1MiB"
+    # Увімкнення детального логування для діагностики
+    loggerLevel: "INFO"
+    
+  # Ресурси для стабільної роботи
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
