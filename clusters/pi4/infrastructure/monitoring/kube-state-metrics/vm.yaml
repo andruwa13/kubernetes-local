@@ -1,0 +1,37 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMServiceScrape
+metadata:
+  name: kube-state-metrics
+  namespace: vm  # змініть на ваш namespace
+spec:
+  jobLabel: kube-state-metrics
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: kube-state-metrics  # стандартний лейбл для kube-state-metrics
+  endpoints:
+    - port: http  # стандартний порт для kube-state-metrics
+      path: /metrics
+      interval: 30s
+      scrapeTimeout: 15s
+      relabelConfigs:
+        - sourceLabels: [__meta_kubernetes_service_label_app_kubernetes_io_name]
+          regex: kube-state-metrics
+          action: keep
+---
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMRule
+metadata:
+  name: kube-state-metrics-rules
+  namespace: vm
+spec:
+  groups:
+  - name: kube-state-metrics
+    rules:
+    - alert: KubeStateMetricsDown
+      expr: absent(up{job="kube-state-metrics"} == 1)
+      for: 15m
+      labels:
+        severity: critical
+      annotations:
+        description: "KubeStateMetrics has disappeared from Prometheus target discovery."
+        summary: "Target disappeared from Prometheus target discovery."
