@@ -7,8 +7,7 @@ spec:
   # Порти за замовчуванням: HTTP ingest на 9429
   # Налаштування віддалених записів (replication)
   remoteWrite:
-    - url: "http://vlcluster-vlinsert.vm.svc.cluster.local:8480/internal/insert"
-    - url: "http://vlcluster-vlinsert.vm.svc.cluster.local:8480/internal/insert"
+    - url: "http://vlinsert-dev-logs.vm.svc.cluster.local:9481/internal/insert"
   # (Опційно) Налаштування буферизації при недоступності
   storage:
     volumeClaimTemplate:
