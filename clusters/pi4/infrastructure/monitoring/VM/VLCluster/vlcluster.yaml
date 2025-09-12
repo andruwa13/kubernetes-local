@@ -1,0 +1,66 @@
+apiVersion: operator.victoriametrics.com/v1
+kind: VLCluster
+metadata:
+  name: dev-logs
+  namespace: vm
+  labels:
+    app.kubernetes.io/name: vlcluster
+    app.kubernetes.io/instance: dev-logs
+spec:
+  # Версія кластеру VictoriaLogs
+  clusterVersion: "v1.2.2"
+  
+  # Конфігурація vlstorage (аналог vmstorage)
+  vlstorage:
+    replicaCount: 1
+    retentionPeriod: "30d"
+    storageDataPath: "/vl-data"
+    
+    storage:
+      volumeClaimTemplate:
+        spec:
+          resources:
+            requests:
+              storage: "10Gi"
+          # storageClassName: "fast-ssd"
+    
+    resources:
+      requests:
+        cpu: 200m
+        memory: 500Mi
+      limits:
+        cpu: 1000m
+        memory: 2Gi
+    
+    nodeSelector:
+      kubernetes.io/hostname: server
+  
+  # Конфігурація vlselect (аналог vmselect)  
+  vlselect:
+    replicaCount: 1
+    
+    resources:
+      requests:
+        cpu: 100m
+        memory: 200Mi
+      limits:
+        cpu: 500m
+        memory: 1Gi
+    
+    nodeSelector:
+      kubernetes.io/hostname: server
+  
+  # Конфігурація vlinsert (аналог vminsert)
+  vlinsert:
+    replicaCount: 1
+    
+    resources:
+      requests:
+        cpu: 100m
+        memory: 200Mi  
+      limits:
+        cpu: 500m
+        memory: 512Mi
+    
+    nodeSelector:
+      kubernetes.io/hostname: server
