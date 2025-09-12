@@ -4,46 +4,174 @@ metadata:
   name: vlagent
   namespace: vm
 spec:
-  # Порти за замовчуванням: HTTP ingest на 9429
-  # Налаштування віддалених записів (replication)
-  remoteWrite:
-    - url: "http://vlinsert-dev-logs.vm.svc.cluster.local:9481/internal/insert"
-  
-  # Конфігурація джерел логів - це критично важливо!
+  # Конфігурація спеціально для K3s
+  # K3s має інші шляхи логів та особливості архітектури
   config: |
-    # Збирання логів з файлів (якщо логи записуються в файли)
-    file_sd_configs:
-      - files:
-          - "/var/log/*.log"
-          - "/var/log/**/*.log"
-    
-    # Або збирання через syslog
-    syslog:
-      listen_addr: ":514"
-    
-    # Або HTTP endpoint для отримання логів
+    # HTTP endpoint для прийому логів
+    # Це основний спосіб для K3s, оскільки файлові шляхи можуть відрізнятися
     http:
       listen_addr: ":9429"
-  
-  # Налаштування буферизації при недоступності
+      
+    # Syslog для системних логів K3s
+    syslog:
+      listen_addr: ":514"
+      
+    # Journald integration для K3s (часто K3s використовує systemd journal)
+    journald:
+      enabled: true
+      # Фільтруємо тільки логи K3s
+      filters:
+        - "_SYSTEMD_UNIT=k3s.service"
+        - "_SYSTEMD_UNIT=k3s-agent.service" 
+        
+    # Файли логів специфічні для K3s
+    # Шляхи можуть відрізнятися залежно від інсталяції
+    file_sd_configs:
+      - files:
+          # Основні логи K3s
+          - "/var/lib/rancher/k3s/server/logs/*.log"
+          - "/var/lib/rancher/k3s/agent/logs/*.log"
+          # Containerd логи в K3s
+          - "/var/lib/rancher/k3s/agent/containerd/**/*.log"
+          # Fallback для стандартних шляхів (якщо існують)
+          - "/var/log/containers/*.log"
+          - "/var/log/pods/*/*.log"
+        
+        # Налаштування для читання файлів
+        relabel_configs:
+          # Додаємо мітку про джерело
+          - source_labels: [__meta_filepath]
+            target_label: log_file
+            
+          # Додаємо мітку про платформу
+          - target_label: platform
+            replacement: "k3s"
+            
+          # Парсимо назву контейнера з шляху (для K3s специфічних шляхів)
+          - source_labels: [__meta_filepath]
+            regex: '.*/([^/]+)\.log'
+            target_label: container_name
+            
+    # Обробка логів
+    processing:
+      # Додаємо обов'язкові мітки для ідентифікації
+      - action: add_label
+        label: cluster
+        value: "k3s-cluster"
+        
+      - action: add_label  
+        label: environment
+        value: "dev"
+        
+      # Часова зона для Німеччини
+      - action: add_label
+        label: timezone
+        value: "Europe/Berlin"
+        
+      # Додаємо hostname вузла
+      - action: add_label
+        label: node_name
+        value: "${HOSTNAME}"
+
+  # Віддалений запис до VictoriaLogs
+  remoteWrite:
+    - url: "http://vlinsert-dev-logs.vm.svc.cluster.local:9481/internal/insert"
+      # Додаткові заголовки для K3s
+      headers:
+        "Content-Type": "application/json"
+        "X-Client": "vlagent-k3s"
+      
+      # Налаштування надійності для K3s (може мати нестабільну мережу)
+      retryConfig:
+        maxRetries: 5
+        retryDelay: "2s"
+        maxRetryDelay: "30s"
+      
+      # Буферизація для кращої продуктивності в K3s
+      queueConfig:
+        capacity: 10000
+        maxShards: 4
+        
+  # Локальне сховище з урахуванням специфіки K3s
   storage:
     volumeClaimTemplate:
       spec:
+        # K3s часто використовує local-path provisioner
+        storageClassName: "local-path"  
         resources:
           requests:
             storage: 5Gi
-            
-  # Додаткові аргументи vlagent
+        # Режим доступу для K3s
+        accessModes:
+          - ReadWriteOnce
+          
+  # Додаткові аргументи оптимізовані для K3s
   extraArgs:
-    insert.maxLineSizeBytes: "1MiB"
-    # Увімкнення детального логування для діагностики
+    # Збільшуємо розмір буфера для K3s (може генерувати великі логи)
+    insert.maxLineSizeBytes: "2MiB"
+    # Детальне логування для діагностики K3s проблем
     loggerLevel: "INFO"
+    # Таймаути адаптовані для K3s
+    http.timeout: "45s"
+    # Оптимізація для менших ресурсів K3s
+    workers: "1"
+    # Memory limit для K3s
+    memory.allowedPercent: "80"
     
-  # Ресурси для стабільної роботи
+  # Ресурси адаптовані для K3s (зазвичай менші вузли)
   resources:
     requests:
-      cpu: 100m
-      memory: 128Mi
+      cpu: "50m"      # Менше CPU для K3s
+      memory: "64Mi"  # Менше пам'яті для K3s
     limits:
-      cpu: 500m
-      memory: 512Mi
+      cpu: "200m"
+      memory: "256Mi"
+      
+  # DaemonSet конфігурація для K3s
+  # Запускаємо на всіх вузлах K3s
+  nodeSelector: {}  # Прибираємо обмеження на конкретний hostname
+  
+  # Толеранси для роботи з K3s master/worker вузлами
+  tolerations:
+    - key: "node-role.kubernetes.io/master"
+      operator: "Exists"
+      effect: "NoSchedule"
+    - key: "node-role.kubernetes.io/control-plane"  
+      operator: "Exists"
+      effect: "NoSchedule"
+    # K3s специфічні taints
+    - key: "k3s.io/hostname"
+      operator: "Exists"
+      
+  # Volume mounts специфічні для K3s
+  volumeMounts:
+    - name: k3s-logs
+      mountPath: /var/lib/rancher/k3s/server/logs
+      readOnly: true
+    - name: k3s-agent-logs  
+      mountPath: /var/lib/rancher/k3s/agent/logs
+      readOnly: true
+    - name: system-journal
+      mountPath: /var/log/journal
+      readOnly: true
+      
+  volumes:
+    - name: k3s-logs
+      hostPath:
+        path: /var/lib/rancher/k3s/server/logs
+        type: DirectoryOrCreate
+    - name: k3s-agent-logs
+      hostPath:
+        path: /var/lib/rancher/k3s/agent/logs  
+        type: DirectoryOrCreate
+    - name: system-journal
+      hostPath:
+        path: /var/log/journal
+        type: DirectoryOrCreate
+        
+  # Service Account з правами для читання K3s логів
+  serviceAccount:
+    create: true
+    annotations:
+      # Додаткові права для K3s
+      "kubernetes.io/service-account.name": "vlagent-k3s"
