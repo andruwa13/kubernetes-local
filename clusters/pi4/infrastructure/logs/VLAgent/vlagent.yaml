@@ -170,8 +170,8 @@ spec:
         type: DirectoryOrCreate
         
   # Service Account з правами для читання K3s логів
-  serviceAccount:
-    create: true
-    annotations:
-      # Додаткові права для K3s
-      "kubernetes.io/service-account.name": "vlagent-k3s"
+#  serviceAccount:
+#    create: true
+#    annotations:
+#      # Додаткові права для K3s
+#      "kubernetes.io/service-account.name": "vlagent-k3s"
