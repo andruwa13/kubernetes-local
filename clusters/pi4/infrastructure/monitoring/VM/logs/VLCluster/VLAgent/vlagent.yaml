@@ -1,0 +1,21 @@
+apiVersion: operator.victoriametrics.com/v1
+kind: VLAgent
+metadata:
+  name: vlagent
+  namespace: vm
+spec:
+  # Порти за замовчуванням: HTTP ingest на 9429
+  # Налаштування віддалених записів (replication)
+  remoteWrite:
+    - url: "http://vlcluster-vlinsert.vm.svc.cluster.local:8480/internal/insert"
+    - url: "http://vlcluster-vlinsert.vm.svc.cluster.local:8480/internal/insert"
+  # (Опційно) Налаштування буферизації при недоступності
+  storage:
+    volumeClaimTemplate:
+      spec:
+        resources:
+          requests:
+            storage: 5Gi
+  # (Опційно) додаткові аргументи vlagent
+  extraArgs:
+    insert.maxLineSizeBytes: "1MiB"
