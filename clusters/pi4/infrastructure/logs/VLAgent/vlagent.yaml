@@ -12,8 +12,8 @@ spec:
 #    limits:
 #      cpu: "500m"
 #      memory: "850Mi"
-  persistentVolumeClaimRetentionPolicy:
-    whenDeleted: Delete
+#  persistentVolumeClaimRetentionPolicy:
+#    whenDeleted: Delete
   storage:
     volumeClaimTemplate:
       spec:
