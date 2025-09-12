@@ -16,7 +16,7 @@ spec:
   interval: 1m
   values:
     remoteWrite:
-      - url: "http://vlinsert-dev-logs.vm.svc.cluster.local:9481/internal/insert"
+      - url: "http://vlinsert-dev-logs.vm.svc.cluster.local:9481"
 #    fileLogs:
 #      - path: "/var/lib/rancher/k3s/agent/containerd/containerd.log"
 #    extraVolumeMounts:
