@@ -23,8 +23,7 @@ spec:
   values:
     # Встановлення VictoriaMetrics плагіна
     env:
-      env:
-  GF_INSTALL_PLUGINS: victoriametrics-metrics-datasource,victoriametrics-logs-datasource
+      GF_INSTALL_PLUGINS: victoriametrics-metrics-datasource,victoriametrics-logs-datasource
 
     persistence:
       enabled: true
