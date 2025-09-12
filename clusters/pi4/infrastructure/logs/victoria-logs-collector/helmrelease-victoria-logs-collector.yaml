@@ -11,7 +11,7 @@ spec:
       version: "0.0.4" # потрібна реальна версія
       sourceRef:
         kind: HelmRepository
-        name: victoriametrics
+        name: victoria-metrics
         namespace: flux-system
   interval: 1m
   values:
