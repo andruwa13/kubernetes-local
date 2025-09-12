@@ -6,7 +6,7 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app.kubernetes.io/instance: vmoperator
+      app.kubernetes.io/instance: victoria-metrics-operator
       app.kubernetes.io/name: victoria-metrics-operator
   namespaceSelector:
     matchNames:
