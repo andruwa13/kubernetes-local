@@ -1,0 +1,58 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMServiceScrape
+metadata:
+  name: node-exporter
+  namespace: vm
+spec:
+  jobLabel: node-exporter
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: node-exporter  # залишаємо як є у вас
+  endpoints:
+    - port: metrics
+      path: /metrics
+      interval: 30s
+      scrapeTimeout: 15s
+      relabelConfigs:
+        # Спрощуємо релейбели для початку
+        - action: replace
+          sourceLabels: [__meta_kubernetes_pod_node_name]
+          targetLabel: node
+
+---
+# Правила алертів для node-exporter
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMRule
+metadata:
+  name: node-exporter-rules
+  namespace: vm
+spec:
+  groups:
+  - name: node-exporter
+    rules:
+    - alert: NodeExporterDown
+      expr: absent(up{job="node-exporter-prometheus-node-exporter"} == 1)
+      for: 15m
+      labels:
+        severity: critical
+      annotations:
+        description: "NodeExporter has disappeared from Prometheus target discovery."
+        summary: "Target disappeared from Prometheus target discovery."
+
+    - alert: HighCPULoad
+      expr: 100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
+      for: 15m
+      labels:
+        severity: warning
+      annotations:
+        description: "CPU load is > 80% on {{ $labels.instance }}"
+        summary: "High CPU load detected"
+
+    - alert: HighMemoryUsage
+      expr: (node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes) / node_memory_MemTotal_bytes * 100 > 85
+      for: 15m
+      labels:
+        severity: warning
+      annotations:
+        description: "Memory usage is > 85% on {{ $labels.instance }}"
+        summary: "High memory usage detected"
