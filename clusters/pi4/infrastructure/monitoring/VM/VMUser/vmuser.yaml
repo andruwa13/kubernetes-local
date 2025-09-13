@@ -47,7 +47,7 @@ spec:
 
     # Конфігурація для VictoriaLogs UI та API
     - crd:
-        kind: VLogs
+        kind: VLCluster
         name: dev-logs
         namespace: vm
       paths:
