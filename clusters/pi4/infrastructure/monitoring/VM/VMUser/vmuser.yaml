@@ -44,26 +44,16 @@ spec:
         - "/prometheus/api/v1/status/.*"
         - "/prometheus/api/v1/label/"
         - "/prometheus/api/v1/label/[^/]+/values"
-        
-    # Оновлена конфігурація для VLCluster з підтримкою UI
+
+    # Конфігурація для VictoriaLogs UI та API
     - crd:
-        kind: VLCluster/vlselect
+        kind: VLogs
         name: dev-logs
         namespace: vm
       paths:
         - "/vlui"
         - "/vlui/.*"
         - "/select/logsql/.*"
-        - "/select/logsql/stats_query"
-        - "/select/logsql/stats_query_range"
-        - "/select/logsql/field_names"
-        - "/select/logsql/field_values"
-    # Додатковий targetRef для VLInsert (для відправки логів)
-    - crd:
-        kind: VLCluster/vlinsert
-        name: dev-logs
-        namespace: vm
-      paths:
         - "/insert/jsonline"
         - "/insert/jsonline/.*"
         - "/insert/loki/.*"
