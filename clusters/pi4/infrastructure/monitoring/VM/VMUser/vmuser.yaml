@@ -44,16 +44,18 @@ spec:
         - "/prometheus/api/v1/status/.*"
         - "/prometheus/api/v1/label/"
         - "/prometheus/api/v1/label/[^/]+/values"
-
-    # Конфігурація для VictoriaLogs UI та API
-    - crd:
-        kind: VLCluster
-        name: dev-logs
-        namespace: vm
-      paths:
-        - "/vlinsert"
-        - "/vlinsert/.*"
-        - "/vlselect"
-        - "/vlselect/.*"
-        - "/vlstorage"
-        - "/vlstorage/.*"
+#    - crd:
+#        kind: VLCluster/vlinsert
+#        name: dev-logs
+#        namespace: vm
+#      paths: ["/insert.*"]
+#    - crd:
+#        kind: VLCluster/vlstorage
+#        name: dev-logs
+#        namespace: vm
+#      paths: ["/internal.*"]
+#    - crd:
+#        kind: VLCluster/vlselect
+#        name: dev-logs
+#        namespace: vm
+#      paths: [".*"]  
