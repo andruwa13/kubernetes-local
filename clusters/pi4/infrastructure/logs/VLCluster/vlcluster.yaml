@@ -34,11 +34,15 @@ spec:
     
     nodeSelector:
       kubernetes.io/hostname: server
-  
-  # Конфігурація vlselect (аналог vmselect)  
+
+    # Додаткові аргументи для vlstorage
+    extraArgs:
+      http.pathPrefix: "/vlstorage"
+
+  # Конфігурація vlselect (аналог vmselect)
   vlselect:
     replicaCount: 1
-    
+
     resources:
       requests:
         cpu: 100m
@@ -46,21 +50,33 @@ spec:
       limits:
         cpu: 500m
         memory: 1Gi
-    
+
     nodeSelector:
       kubernetes.io/hostname: server
-  
+
+    # Додаткові аргументи для vlselect
+    extraArgs:
+      http.pathPrefix: "/vlselect"
+      # Увімкнення VLUI
+      http.disableResponseCompression: "false"
+
   # Конфігурація vlinsert (аналог vminsert)
   vlinsert:
     replicaCount: 1
-    
+
     resources:
       requests:
         cpu: 100m
-        memory: 200Mi  
+        memory: 200Mi
       limits:
         cpu: 500m
         memory: 512Mi
-    
+
     nodeSelector:
       kubernetes.io/hostname: server
+
+    # Додаткові аргументи для vlinsert
+    extraArgs:
+      http.pathPrefix: "/vlinsert"
+      # Максимальний розмір лог повідомлення
+      insert.maxFieldsPerLine: "1000"
