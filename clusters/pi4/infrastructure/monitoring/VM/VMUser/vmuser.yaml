@@ -51,10 +51,9 @@ spec:
         name: dev-logs
         namespace: vm
       paths:
-        - "/vlui"
-        - "/vlui/.*"
-        - "/select/logsql/.*"
-        - "/insert/jsonline"
-        - "/insert/jsonline/.*"
-        - "/insert/loki/.*"
-        - "/insert/elasticsearch/.*"
+        - "/vlinsert"
+        - "/vlinsert/.*"
+        - "/vlselect"
+        - "/vlselect/.*"
+        - "/vlstorage"
+        - "/vlstorage/.*"
