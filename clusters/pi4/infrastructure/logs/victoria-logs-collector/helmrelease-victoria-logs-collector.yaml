@@ -8,7 +8,7 @@ spec:
   chart:
     spec:
       chart: victoria-logs-collector
-      version: "0.0.4" # потрібна реальна версія
+      version: "0.0.5" # потрібна реальна версія
       sourceRef:
         kind: HelmRepository
         name: victoria-metrics
