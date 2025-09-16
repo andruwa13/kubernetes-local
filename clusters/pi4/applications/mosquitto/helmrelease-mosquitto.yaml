@@ -15,20 +15,36 @@ spec:
       version: "2.6.1"
   interval: 1m
   values:
-    replicaCount: 1
-    persistence:
-      enabled: true
-      storageClass: local-path
-      accessModes:
-        - ReadWriteOnce
-      size: 1Gi
+#    replicaCount: 1
+#    image:
+#      repository: eclipse-mosquitto
+      # tag: ""                 # опціонально, за замовчуванням буде appVersion з chart
+#      pullPolicy: IfNotPresent
     service:
       type: ClusterIP
       port: 1883
-    config:
-      mosquitto.conf: |-
-        persistence true
-        persistence_location /mosquitto/data/
-        log_dest stdout
-        listener 1883
-        allow_anonymous true
+    ports:
+      mqtt:
+        port: 1883
+        protocol: TCP
+      websocket:
+        port: 9090
+        protocol: TCP
+    persistence:
+      enabled: true
+      accessMode: ReadWriteOnce
+      size: 1Gi
+      storageClass: local-path
+      mountPath: /mosquitto/data
+    config: |
+      persistence true
+      persistence_location /mosquitto/data/
+      log_dest stdout
+      listener 1883
+      allow_anonymous true
+      listener 9090
+      protocol websockets
+    resources: {}
+    nodeSelector: {}
+    tolerations: []
+    affinity: {}
