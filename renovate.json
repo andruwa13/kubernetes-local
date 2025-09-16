@@ -81,6 +81,31 @@
     {
       "customType": "regex",
       "managerFilePatterns": [
+        "/vlcluster\\.yaml$/"
+      ],
+      "matchStrings": [
+        "clusterVersion:\\s*(?<currentValue>v\\d+\\.\\d+\\.\\d+)(?!-cluster)"
+      ],
+      "depNameTemplate": "VictoriaMetrics/VictoriaLogs",
+      "datasourceTemplate": "github-tags",
+      "description": "Track VictoriaLogs clusterVersion"
+    },
+    {
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/vlagent\\.yaml$/"
+      ],
+      "matchStrings": [
+        "tag:\\s?(?<currentValue>[^\\s]+)"
+      ],
+      "datasourceTemplate": "docker",
+      "depNameTemplate": "victoriametrics/vlagent",
+      "versioningTemplate": "docker",
+      "description": "Track VLAgent Docker image"
+    },
+    {
+      "customType": "regex",
+      "managerFilePatterns": [
         "/^.*values.*\\.ya?ml$/",
         "/^.*\\.ya?ml$/"
       ],
@@ -134,7 +159,7 @@
         "VictoriaMetrics/VictoriaMetrics"
       ],
       "automerge": false,
-      "description": "Manual review for VictoriaMetrics versions"
+      "description": "Manual review for VictoriaMetrics/VictoriaLogs versions"
     },
     {
       "matchManagers": [
