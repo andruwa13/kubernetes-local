@@ -20,6 +20,7 @@ spec:
         enabled: true
         size: 1Gi
         storageClass: local-path
+        accessMode: ReadWriteOnce
     config:
       mosquitto.conf: |
         persistence true
