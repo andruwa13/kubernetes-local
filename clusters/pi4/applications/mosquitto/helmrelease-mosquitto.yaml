@@ -1,0 +1,38 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: mosquitto
+  namespace: home-assistant
+spec:
+  releaseName: mosquitto
+  chart:
+    spec:
+      chart: mosquitto
+      sourceRef:
+        kind: HelmRepository
+        name: mosquitto
+        namespace: flux-system
+      version: "5.0.12"
+  interval: 1m
+  values:
+    persistence:
+      data:
+        enabled: true
+        size: 1Gi
+        storageClass: local-path
+    config:
+      mosquitto.conf: |
+        persistence true
+        persistence_location /mosquitto/data/
+        log_dest stdout
+        listener 1883
+        allow_anonymous true      # дозволено без логіна-пароля
+    service:
+      type: ClusterIP
+      ports:
+        mqtt: 1883
+    securityContext:
+      runAsUser: 1000
+      runAsGroup: 1000
+    nodeSelector:
+      kubernetes.io/hostname: pi4
