@@ -10,7 +10,7 @@ spec:
       chart: mosquitto
       sourceRef:
         kind: HelmRepository
-        name: k8sonlab-mosquitto
+        name: k8sonlab
         namespace: flux-system
       version: "2.6.1"
   interval: 1m
