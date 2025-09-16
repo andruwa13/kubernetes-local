@@ -1,8 +1,8 @@
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmRepository
 metadata:
-  name: mosquitto
+  name: t3n-mosquitto
   namespace: flux-system
 spec:
   interval: 5m
-  url: https://k8s-at-home.com/charts/
+  url: https://t3n.github.io/helm-charts/

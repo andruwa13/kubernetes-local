@@ -10,30 +10,22 @@ spec:
       chart: mosquitto
       sourceRef:
         kind: HelmRepository
-        name: mosquitto
+        name: t3n-mosquitto
         namespace: flux-system
-      version: "4.8.2"
+      version: "2.4.1"
   interval: 1m
   values:
     persistence:
-      data:
-        enabled: true
-        size: 1Gi
-        storageClass: local-path
-        accessMode: ReadWriteOnce
-    config:
-      mosquitto.conf: |
-        persistence true
-        persistence_location /mosquitto/data/
-        log_dest stdout
-        listener 1883
-        allow_anonymous true      # дозволено без логіна-пароля
+      enabled: true
+      storageClass: local-path
+      accessMode: ReadWriteOnce
+    replicaCount: 1
     service:
       type: ClusterIP
-      ports:
-        mqtt: 1883
-    securityContext:
-      runAsUser: 1000
-      runAsGroup: 1000
-    nodeSelector:
-      kubernetes.io/hostname: pi4
+      port: 1883
+    config:
+      allowAnonymous: true
+      log:
+        - stdout
+      listener:
+        - 1883
