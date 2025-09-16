@@ -12,38 +12,28 @@ spec:
         kind: HelmRepository
         name: zigbee2mqtt
         namespace: flux-system
-      version: "9.4.2"
+      version: "2.6.0"
   interval: 1m
   values:
-    image:
-      tag: latest
-    persistence:
-      data:
-        enabled: true
-        size: 1Gi
-        storageClass: local-path
-        accessMode: ReadWriteOnce
-    env:
-      ZIGBEE2MQTT_DATA: /app/data
-      ZIGBEE2MQTT_CONFIG_MQTT_SERVER: mqtt://mosquitto.home-assistant.svc.cluster.local:1883
-      ZIGBEE2MQTT_CONFIG_MQTT_USER: ""                # без логіна
-      ZIGBEE2MQTT_CONFIG_MQTT_PASSWORD: ""            # без пароля
-      ZIGBEE2MQTT_CONFIG_SERIAL_PORT: /dev/zigbee
-      ZIGBEE2MQTT_CONFIG_SERIAL_ADAPTER: ember
-      ZIGBEE2MQTT_CONFIG_HOMEASSISTANT: "true"
-    securityContext:
-      privileged: true
-    extraVolumes:
-      - name: zigbee-device
-        hostPath:
-          path: /dev/zigbee
-          type: CharDevice
-    extraVolumeMounts:
-      - name: zigbee-device
-        mountPath: /dev/zigbee
-    nodeSelector:
-      kubernetes.io/hostname: pi4
-    service:
-      type: ClusterIP
-      ports:
-        http: 8080
+    statefulset:
+      nodeSelector:
+        kubernetes.io/hostname: pi4
+      securityContext:
+        privileged: true
+      volumes:
+        - name: zigbee
+          hostPath:
+            path: /dev/zigbee
+            type: CharDevice
+      volumeMounts:
+        - name: zigbee
+          mountPath: /dev/zigbee
+    config:
+      homeassistant: true
+      mqtt:
+        server: "mqtt://mosquitto.home-assistant.svc.cluster.local:1883"
+        user: ""
+        password: ""
+      serial:
+        port: "/dev/zigbee"
+        adapter: "ember"
