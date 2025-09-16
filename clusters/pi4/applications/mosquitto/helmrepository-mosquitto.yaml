@@ -5,4 +5,4 @@ metadata:
   namespace: flux-system
 spec:
   interval: 5m
-  url: https://k8sonlab.github.io/charts/
+  url: https://charts.ar80.eu
