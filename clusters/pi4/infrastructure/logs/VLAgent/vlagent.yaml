@@ -9,7 +9,7 @@ spec:
 
   # Віддалений запис до VictoriaLogs
   remoteWrite:
-    - url: "http://vlinsert-dev-logs.vm.svc.cluster.local:9481"
+    - url: "http://vlstorage-dev-logs.vm.svc.cluster.local:9428/internal/insert"
         
   # Локальне сховище з урахуванням специфіки K3s
   storage:
