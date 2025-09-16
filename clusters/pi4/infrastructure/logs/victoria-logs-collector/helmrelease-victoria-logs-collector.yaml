@@ -15,9 +15,10 @@ spec:
         namespace: flux-system
   interval: 1m
   values:
-    image:
-      repository: timberio/vector
-      tag: 0.49.0-debian
+    global:
+      image:
+        repository: timberio/vector
+        tag: 0.49.0-debian
     remoteWrite:
       - url: "http://vlinsert-dev-logs.vm.svc.cluster.local:9481"
 #    fileLogs:
