@@ -10,22 +10,25 @@ spec:
       chart: mosquitto
       sourceRef:
         kind: HelmRepository
-        name: t3n-mosquitto
+        name: k8sonlab-mosquitto
         namespace: flux-system
-      version: "2.4.1"
+      version: "2.6.0"
   interval: 1m
   values:
+    replicaCount: 1
     persistence:
       enabled: true
       storageClass: local-path
-      accessMode: ReadWriteOnce
-    replicaCount: 1
+      accessModes:
+        - ReadWriteOnce
+      size: 1Gi
     service:
       type: ClusterIP
       port: 1883
     config:
-      allowAnonymous: true
-      log:
-        - stdout
-      listener:
-        - 1883
+      mosquitto.conf: |-
+        persistence true
+        persistence_location /mosquitto/data/
+        log_dest stdout
+        listener 1883
+        allow_anonymous true
