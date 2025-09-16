@@ -84,7 +84,7 @@
         "/vlcluster\\.yaml$/"
       ],
       "matchStrings": [
-        "clusterVersion:\\s*(?<currentValue>v\\d+\\.\\d+\\.\\d+)(?!-cluster)"
+        "clusterVersion:\\s*(?<currentValue>v\\d+\\.\\d+\\.\\d+)"
       ],
       "depNameTemplate": "VictoriaMetrics/VictoriaLogs",
       "datasourceTemplate": "github-tags",
