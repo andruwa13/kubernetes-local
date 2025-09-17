@@ -22,6 +22,8 @@ spec:
     remediation:
       retries: 3
   values:
+    securityContext:
+      privileged: true
     hostNetwork: true
     image:
       tag: "2025.8.2"
