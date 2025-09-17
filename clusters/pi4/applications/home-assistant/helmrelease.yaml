@@ -45,7 +45,7 @@ spec:
 
       - name: zigbee-device
         hostPath:
-          path: /dev/zigbee
+          path: /dev/ttyUSB0
           type: CharDevice
           
     additionalMounts:
@@ -53,7 +53,7 @@ spec:
         mountPath: /run/dbus
         readOnly: true
       - name: zigbee-device
-        mountPath: /dev/zigbee
+        mountPath: /dev/ttyUSB0
 
 
 #    additionalMounts:
