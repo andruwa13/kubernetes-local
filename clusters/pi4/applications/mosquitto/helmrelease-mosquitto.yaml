@@ -45,6 +45,7 @@ spec:
       listener 9090
       protocol websockets
     resources: {}
-    nodeSelector: {}
+    nodeSelector:
+      kubernetes.io/hostname: pi4
     tolerations: []
     affinity: {}
