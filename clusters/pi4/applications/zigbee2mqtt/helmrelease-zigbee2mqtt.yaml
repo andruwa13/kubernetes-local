@@ -23,11 +23,11 @@ spec:
       volumes:
         - name: zigbee
           hostPath:
-            path: /dev/zigbee
+            path: /dev/ttyUSB0
             type: CharDevice
       volumeMounts:
         - name: zigbee
-          mountPath: /dev/zigbee
+          mountPath: /dev/ttyUSB0
     config:
       homeassistant: true
       mqtt:
@@ -35,5 +35,5 @@ spec:
         user: ""
         password: ""
       serial:
-        port: "/dev/zigbee"
+        port: "/dev/ttyUSB0"
         adapter: "ember"
