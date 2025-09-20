@@ -23,19 +23,17 @@ spec:
           type: Directory
     additionalMounts:
       - name: plex-media
-          mountPath: /data
-          readOnly: false
+        mountPath: /data
+        readOnly: false
     hostNetwork: true
     env:
       TZ: Europe/Berlin
     persistence:
       config:
         enabled: true
+      # Вимикаємо media persistence, бо використовуємо hostPath
       media:
-        enabled: true
-        existingClaim: plex-media-pvc
-        mountPath: /data
-        readOnly: false
+        enabled: false
       transcode:
         enabled: true
         type: pvc
