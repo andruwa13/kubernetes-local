@@ -14,38 +14,34 @@ spec:
         name: alekc-charts
         namespace: flux-system
   values:
-    image:
-      tag: "1.42.1.10060-4e8b05daf"
     env:
       TZ: "Europe/Berlin"
     hostNetwork: true
     nodeSelector:
       kubernetes.io/hostname: server
 
-    # Використовуємо старий PVC для конфига   
     persistence:
       config:
         enabled: true
         isPvc: true
         existingClaim: plex-config-pvc
+      
+      # ВИКОРИСТОВУЄМО ТІЛЬКИ ЦЕ - розкоментуй та видали extraVolumes
+      data:
+        enabled: true
+        isPvc: false
+        customVolume:
+          hostPath:
+            path: /mnt/hdd
+            type: Directory
 
-      # Каталог з основним медіа через hostPath (як було)
-#      data:
-#        enabled: true
-#        isPvc: false
-#        customVolume:
-#          hostPath:
-#            path: /mnt/hdd
-#            type: Directory
-
-      # Якщо потрібен окремий PVC/hostPath для transcode - додай тут
-
-    extraVolumes:
-      - name: plex-media
-        hostPath:
-          path: /mnt/hdd
-          type: Directory
-    extraVolumeMounts:
-      - name: plex-media
-        mountPath: /data
-        readOnly: false
+    # ВИДАЛИ ЦІ СЕКЦІЇ - вони створюють конфлікт
+    # extraVolumes:
+    #   - name: plex-media
+    #     hostPath:
+    #       path: /mnt/hdd
+    #       type: Directory
+    # extraVolumeMounts:
+    #   - name: plex-media
+    #     mountPath: /data
+    #     readOnly: false
