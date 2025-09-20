@@ -24,9 +24,12 @@ spec:
       config:
         enabled: true
         isPvc: true
-        existingClaim: plex-config-pvc
+        # НЕ вказуємо existingClaim - нехай створить новий
+        storageClass: ""  # default storage class
+        size: 2Gi
+        accessModes:
+          - ReadWriteOnce
       
-      # ВИКОРИСТОВУЄМО ТІЛЬКИ ЦЕ - розкоментуй та видали extraVolumes
       data:
         enabled: true
         isPvc: false
@@ -34,14 +37,3 @@ spec:
           hostPath:
             path: /mnt/hdd
             type: Directory
-
-    # ВИДАЛИ ЦІ СЕКЦІЇ - вони створюють конфлікт
-    # extraVolumes:
-    #   - name: plex-media
-    #     hostPath:
-    #       path: /mnt/hdd
-    #       type: Directory
-    # extraVolumeMounts:
-    #   - name: plex-media
-    #     mountPath: /data
-    #     readOnly: false
