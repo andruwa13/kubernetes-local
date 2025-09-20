@@ -14,6 +14,8 @@ spec:
         name: plex-helm
         namespace: flux-system
   values:
+    image:
+      tag: "1.42.1.10054-f333bdaa8"
     additionalVolumes:
       - name: plex-media
         hostPath:
@@ -21,8 +23,8 @@ spec:
           type: Directory
     additionalMounts:
       - name: plex-media
-        mountPath: /media
-        readOnly: false
+          mountPath: /data
+          readOnly: false
     hostNetwork: true
     env:
       TZ: Europe/Berlin
