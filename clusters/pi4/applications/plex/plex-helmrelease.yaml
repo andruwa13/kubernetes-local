@@ -2,7 +2,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
   name: plex
-  namespace: default
+  namespace: plex
 spec:
   interval: 5m0s
   chart:
@@ -15,9 +15,9 @@ spec:
         namespace: flux-system
   values:
     image:
-      tag: "latest"
+      tag: "1.1.2"
     env:
-      TZ: Europe/Kiev
+      TZ: Europe/Berlin
     service:
       main:
         type: LoadBalancer
@@ -25,10 +25,15 @@ spec:
       config:
         enabled: true
         existingClaim: plex-config-pvc
+      media:
+        enabled: true
+        existingClaim: plex-media-pvc
+        mountPath: /data
+        readOnly: false
       transcode:
         enabled: true
         type: emptyDir
         medium: Memory
         sizeLimit: 2Gi
     nodeSelector:
-      kubernetes.io/hostname: pi4-node-1
+      kubernetes.io/hostname: server
