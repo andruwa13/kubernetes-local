@@ -32,8 +32,8 @@ spec:
         readOnly: false
       transcode:
         enabled: true
-        type: emptyDir
-        medium: Memory
-        sizeLimit: 2Gi
+        type: pvc
+        existingClaim: plex-config-pvc  # Використовує той самий PVC
+        subPath: transcode
     nodeSelector:
       kubernetes.io/hostname: server
