@@ -14,13 +14,21 @@ spec:
         name: plex-helm
         namespace: flux-system
   values:
+    additionalVolumes:
+      - name: plex-media
+        hostPath:
+          path: /mnt/hdd
+          type: Directory
+    additionalMounts:
+      - name: plex-media
+        mountPath: /media
+        readOnly: false
     hostNetwork: true
     env:
       TZ: Europe/Berlin
     persistence:
       config:
         enabled: true
-        existingClaim: plex-config-pvc
       media:
         enabled: true
         existingClaim: plex-media-pvc
