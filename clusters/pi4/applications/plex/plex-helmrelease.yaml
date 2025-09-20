@@ -22,7 +22,7 @@ spec:
     nodeSelector:
       kubernetes.io/hostname: server
 
-    # Використовуємо старий PVC для конфига
+    # Використовуємо старий PVC для конфига   
     persistence:
       config:
         enabled: true
@@ -30,13 +30,13 @@ spec:
         existingClaim: plex-config-pvc
 
       # Каталог з основним медіа через hostPath (як було)
-      data:
-        enabled: false
-        isPvc: false
-        customVolume:
-          hostPath:
-            path: /mnt/hdd
-            type: Directory
+#      data:
+#        enabled: true
+#        isPvc: false
+#        customVolume:
+#          hostPath:
+#            path: /mnt/hdd
+#            type: Directory
 
       # Якщо потрібен окремий PVC/hostPath для transcode - додай тут
 
