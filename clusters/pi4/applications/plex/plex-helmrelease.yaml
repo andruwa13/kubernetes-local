@@ -15,7 +15,7 @@ spec:
         namespace: flux-system
   values:
     image:
-      tag: "1.42.1.10054-f333bdaa8"
+      tag: "1.42.1.10060-4e8b05daf"
     extraVolumes:
       - name: plex-media
         hostPath:
