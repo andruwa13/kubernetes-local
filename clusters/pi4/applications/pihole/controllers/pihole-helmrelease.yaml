@@ -21,7 +21,7 @@ spec:
     # DNS2: "8.8.4.4"
     
     # Використання LoadBalancer замість hostNetwork для кращої інтеграції
-    hostNetwork: false
+    hostNetwork: true
     dnsPolicy: "ClusterFirst"
     
     nodeSelector:
