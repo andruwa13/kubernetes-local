@@ -16,28 +16,39 @@ spec:
   values:
     timezone: "Europe/Berlin"
     
-    # Налаштування DNS
-    DNS1: "8.8.8.8"
-    DNS2: "8.8.4.4"
+    # Налаштування DNS (перенесено в env секцію)
+    # DNS1: "8.8.8.8"
+    # DNS2: "8.8.4.4"
     
-    # Використання hostNetwork для доступу до DNS на порту 53
-    hostNetwork: true
-    dnsPolicy: "ClusterFirstWithHostNet"
+    # Використання LoadBalancer замість hostNetwork для кращої інтеграції
+    hostNetwork: false
+    dnsPolicy: "ClusterFirst"
     
     nodeSelector:
       kubernetes.io/hostname: server
     
-    # Налаштування сервісу
+    # Налаштування сервісу з LoadBalancer для DNS
     serviceTCP:
-      type: ClusterIP
+      type: LoadBalancer
       port: 53
+      loadBalancerIP: "192.168.0.110"
+      annotations:
+        metallb.universe.tf/loadBalancerIPs: "192.168.0.110"
+        metallb.universe.tf/allow-shared-ip: "pihole-svc"
     serviceUDP:
-      type: ClusterIP  
+      type: LoadBalancer
       port: 53
+      loadBalancerIP: "192.168.0.110"
+      annotations:
+        metallb.universe.tf/loadBalancerIPs: "192.168.0.110"
+        metallb.universe.tf/allow-shared-ip: "pihole-svc"
     serviceWeb:
-      type: NodePort
+      type: LoadBalancer
       port: 80
-      nodePort: 30080
+      loadBalancerIP: "192.168.0.110"
+      annotations:
+        metallb.universe.tf/loadBalancerIPs: "192.168.0.110"
+        metallb.universe.tf/allow-shared-ip: "pihole-svc"
     
     persistentVolumeClaim:
       enabled: true
@@ -50,23 +61,70 @@ spec:
     # Налаштування ресурсів
     resources:
       limits:
+        cpu: 500m
+        memory: 512Mi
+      requests:
         cpu: 200m
         memory: 256Mi
-      requests:
-        cpu: 100m
-        memory: 128Mi
+    
+    # Привілейований режим для DNS операцій
+    privileged: true
+    
+    # Налаштування readiness та liveness probes
+    probes:
+      readiness:
+        enabled: true
+        initialDelaySeconds: 30
+        periodSeconds: 10
+      liveness:
+        enabled: true
+        initialDelaySeconds: 30
+        periodSeconds: 30
     
     # Додаткові налаштування Pi-hole
     admin:
       enabled: true
-      # Пароль буде згенерований автоматично, можна знайти в логах
     
-    # Налаштування blocklists (за замовчуванням підключені основні списки)
-    adlists:
-      # Можна додати додаткові списки блокування
-    
-    # Налаштування для підвищення безпеки
+    # Налаштування для підвищення безпеки (виправлення проблем з правами)
     podSecurityContext:
-      runAsUser: 999
-      runAsGroup: 999
-      fsGroup: 999
+      runAsUser: 0  # root user для Pi-hole
+      runAsGroup: 0
+      fsGroup: 0
+    
+    # Додаткові змінні середовища
+    env:
+      WEBPASSWORD: "admin123"  # або залиш порожнім для автоматичної генерації
+      PIHOLE_DNS_: "8.8.8.8;8.8.4.4"
+      DNSMASQ_LISTENING: "all"
+      WEB_PORT: "80"
+      FTLCONF_LOCAL_IPV4: "192.168.0.110"
+      FTLCONF_PIHOLE_PTR: "HOSTNAME"
+      DNS_BOGUS_PRIV: "true"
+      DNS_FQDN_REQUIRED: "true"
+      REV_SERVER: "false"
+      TEMPERATUREUNIT: "c"
+      WEBUIBOXEDLAYOUT: "boxed"
+      QUERY_LOGGING: "true"
+      INSTALL_WEB_SERVER: "true"
+      INSTALL_WEB_INTERFACE: "true"
+      LIGHTTPD_ENABLED: "true"
+    
+    # Налаштування для правильної роботи FTL
+    doh:
+      enabled: false
+    
+    # Додаткові adlists з blocklistproject
+    adlists:
+      # Основні категорії блокування
+      - "https://raw.githubusercontent.com/blocklistproject/Lists/master/ads.txt"
+      - "https://raw.githubusercontent.com/blocklistproject/Lists/master/malware.txt"
+      - "https://raw.githubusercontent.com/blocklistproject/Lists/master/phishing.txt"
+      - "https://raw.githubusercontent.com/blocklistproject/Lists/master/tracking.txt"
+      - "https://raw.githubusercontent.com/blocklistproject/Lists/master/scam.txt"
+      - "https://raw.githubusercontent.com/blocklistproject/Lists/master/abuse.txt"
+      - "https://raw.githubusercontent.com/blocklistproject/Lists/master/drugs.txt"
+      - "https://raw.githubusercontent.com/blocklistproject/Lists/master/gambling.txt"
+      - "https://raw.githubusercontent.com/blocklistproject/Lists/master/porn.txt"
+      - "https://raw.githubusercontent.com/blocklistproject/Lists/master/ransomware.txt"
+      - "https://raw.githubusercontent.com/blocklistproject/Lists/master/redirect.txt"
+      - "https://raw.githubusercontent.com/blocklistproject/Lists/master/smart-tv.txt"
