@@ -124,17 +124,17 @@ spec:
       enabled: false
     
     # Додаткові adlists з blocklistproject
-    adlists:
-      # Основні категорії блокування
-      - "https://raw.githubusercontent.com/blocklistproject/Lists/master/ads.txt"
-      - "https://raw.githubusercontent.com/blocklistproject/Lists/master/malware.txt"
-      - "https://raw.githubusercontent.com/blocklistproject/Lists/master/phishing.txt"
-      - "https://raw.githubusercontent.com/blocklistproject/Lists/master/tracking.txt"
-      - "https://raw.githubusercontent.com/blocklistproject/Lists/master/scam.txt"
-      - "https://raw.githubusercontent.com/blocklistproject/Lists/master/abuse.txt"
-      - "https://raw.githubusercontent.com/blocklistproject/Lists/master/drugs.txt"
-      - "https://raw.githubusercontent.com/blocklistproject/Lists/master/gambling.txt"
-      - "https://raw.githubusercontent.com/blocklistproject/Lists/master/porn.txt"
-      - "https://raw.githubusercontent.com/blocklistproject/Lists/master/ransomware.txt"
-      - "https://raw.githubusercontent.com/blocklistproject/Lists/master/redirect.txt"
-      - "https://raw.githubusercontent.com/blocklistproject/Lists/master/smart-tv.txt"
+#    adlists:
+#      # Основні категорії блокування
+#      - "https://raw.githubusercontent.com/blocklistproject/Lists/master/ads.txt"
+#      - "https://raw.githubusercontent.com/blocklistproject/Lists/master/malware.txt"
+#      - "https://raw.githubusercontent.com/blocklistproject/Lists/master/phishing.txt"
+#      - "https://raw.githubusercontent.com/blocklistproject/Lists/master/tracking.txt"
+#      - "https://raw.githubusercontent.com/blocklistproject/Lists/master/scam.txt"
+#      - "https://raw.githubusercontent.com/blocklistproject/Lists/master/abuse.txt"
+#      - "https://raw.githubusercontent.com/blocklistproject/Lists/master/drugs.txt"
+#      - "https://raw.githubusercontent.com/blocklistproject/Lists/master/gambling.txt"
+#      - "https://raw.githubusercontent.com/blocklistproject/Lists/master/porn.txt"
+#      - "https://raw.githubusercontent.com/blocklistproject/Lists/master/ransomware.txt"
+#      - "https://raw.githubusercontent.com/blocklistproject/Lists/master/redirect.txt"
+#      - "https://raw.githubusercontent.com/blocklistproject/Lists/master/smart-tv.txt"
