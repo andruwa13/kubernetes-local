@@ -14,6 +14,11 @@ spec:
         name: pihole-charts
         namespace: flux-system
   values:
+    extraEnvVars:
+      # Слухати на всіх інтерфейсах, щоб FTL бачив реальні IP
+      FTLCONF_dns_listeningMode: "all"
+      # Вказати IP зовнішнього LoadBalancer для правильного client ID
+      FTLCONF_LOCAL_IPV4: "192.168.0.110"
     timezone: "Europe/Berlin"
     
     # Налаштування DNS (перенесено в env секцію)
