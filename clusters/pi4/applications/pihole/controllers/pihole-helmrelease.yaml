@@ -31,21 +31,18 @@ spec:
     serviceTCP:
       type: LoadBalancer
       port: 53
-      loadBalancerIP: "192.168.0.110"
       annotations:
         metallb.universe.tf/loadBalancerIPs: "192.168.0.110"
         metallb.universe.tf/allow-shared-ip: "pihole-svc"
     serviceUDP:
       type: LoadBalancer
       port: 53
-      loadBalancerIP: "192.168.0.110"
       annotations:
         metallb.universe.tf/loadBalancerIPs: "192.168.0.110"
         metallb.universe.tf/allow-shared-ip: "pihole-svc"
     serviceWeb:
       type: LoadBalancer
       port: 80
-      loadBalancerIP: "192.168.0.110"
       annotations:
         metallb.universe.tf/loadBalancerIPs: "192.168.0.110"
         metallb.universe.tf/allow-shared-ip: "pihole-svc"
