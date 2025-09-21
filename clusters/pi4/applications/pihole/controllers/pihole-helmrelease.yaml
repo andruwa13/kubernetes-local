@@ -21,10 +21,6 @@ spec:
 
     timezone: "Europe/Berlin"
     
-    # Налаштування DNS (перенесено в env секцію)
-    # DNS1: "8.8.8.8"
-    # DNS2: "8.8.4.4"
-    
     # Використання LoadBalancer замість hostNetwork для кращої інтеграції
     hostNetwork: false
     dnsPolicy: "ClusterFirst"
@@ -79,31 +75,9 @@ spec:
     # Привілейований режим для DNS операцій
     privileged: true
     
-    # Налаштування readiness та liveness probes
-    probes:
-      readiness:
-        enabled: true
-        initialDelaySeconds: 30
-        periodSeconds: 10
-      liveness:
-        enabled: true
-        initialDelaySeconds: 30
-        periodSeconds: 30
-    
     # Додаткові налаштування Pi-hole
     admin:
       enabled: true
-    
-    # Налаштування для підвищення безпеки (виправлення проблем з правами)
-    podSecurityContext:
-      runAsUser: 0  # root user для Pi-hole
-      runAsGroup: 0
-      fsGroup: 0
-    
-    # Додаткові змінні середовища
-#    env:
-#      WEBPASSWORD: ""  # або залиш порожнім для автоматичної генерації
-    
 
     doh:
       enabled: true
