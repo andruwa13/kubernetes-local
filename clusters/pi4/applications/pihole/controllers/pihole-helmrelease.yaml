@@ -97,7 +97,7 @@ spec:
     
     # Додаткові змінні середовища
     env:
-        FTLCONF_LOCAL_IPV4: "192.168.0.110"  # IP вашого LoadBalancer
+      FTLCONF_LOCAL_IPV4: "192.168.0.110"  # IP вашого LoadBalancer
       WEBPASSWORD: ""  # або залиш порожнім для автоматичної генерації
       PIHOLE_DNS_: "8.8.8.8;8.8.4.4"
       DNSMASQ_LISTENING: "all"
