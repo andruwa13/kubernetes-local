@@ -101,25 +101,10 @@ spec:
       fsGroup: 0
     
     # Додаткові змінні середовища
-    env:
-      FTLCONF_LOCAL_IPV4: "192.168.0.110"  # IP вашого LoadBalancer
-      WEBPASSWORD: ""  # або залиш порожнім для автоматичної генерації
-      PIHOLE_DNS_: "8.8.8.8;8.8.4.4"
-      DNSMASQ_LISTENING: "all"
-      WEB_PORT: "80"
-      # FTLCONF_LOCAL_IPV4: буде встановлено автоматично
-      FTLCONF_PIHOLE_PTR: "HOSTNAME"
-      DNS_BOGUS_PRIV: "true"
-      DNS_FQDN_REQUIRED: "true"
-      REV_SERVER: "false"
-      TEMPERATUREUNIT: "c"
-      WEBUIBOXEDLAYOUT: "boxed"
-      QUERY_LOGGING: "true"
-      INSTALL_WEB_SERVER: "true"
-      INSTALL_WEB_INTERFACE: "true"
-      LIGHTTPD_ENABLED: "true"
+#    env:
+#      WEBPASSWORD: ""  # або залиш порожнім для автоматичної генерації
     
-    # Налаштування для правильної роботи FTL
+
     doh:
       enabled: true
       pullPolicy: Always
