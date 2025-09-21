@@ -14,56 +14,54 @@ spec:
         name: pihole-charts
         namespace: flux-system
   values:
-
+    # Налаштування DNS сервісу
     serviceDns:
-      loadBalancerIP: 192.168.0.110
       type: LoadBalancer
-
-    timezone: "Europe/Berlin"
+      port: 53
+      # Видаляємо loadBalancerIP, використовуємо лише анотації
+      annotations:
+        metallb.io/loadBalancerIPs: "192.168.0.110"
+        metallb.io/allow-shared-ip: "pihole-shared-ip"
+      externalTrafficPolicy: Local
     
-    # Використання LoadBalancer замість hostNetwork для кращої інтеграції
+    # Налаштування веб інтерфейсу
+    serviceWeb:
+      type: LoadBalancer
+      http:
+        enabled: true
+        port: 80
+      https:
+        enabled: true
+        port: 443
+      annotations:
+        metallb.io/loadBalancerIPs: "192.168.0.110"
+        metallb.io/allow-shared-ip: "pihole-shared-ip"
+      externalTrafficPolicy: Local
+    
+    # Налаштування DHCP сервісу (якщо потрібен)
+    serviceDhcp:
+      enabled: false  # Відключаємо DHCP для уникнення конфліктів
+      type: LoadBalancer
+      port: 67
+      annotations:
+        metallb.io/loadBalancerIPs: "192.168.0.110" 
+        metallb.io/allow-shared-ip: "pihole-shared-ip"
+      externalTrafficPolicy: Local
+    
+    timezone: "Europe/Berlin"
     hostNetwork: false
     dnsPolicy: "ClusterFirst"
     
     nodeSelector:
       kubernetes.io/hostname: server
     
-    # Глобальні анотації для всіх сервісів
-    serviceAnnotations:
-      metallb.io/loadBalancerIPs: "192.168.0.110"
-    
-
-
-    
-    # Налаштування сервісу з LoadBalancer для DNS
-    serviceTCP:
-      type: LoadBalancer
-      port: 53
-      externalTrafficPolicy: Local
-      annotations:
-        metallb.io/loadBalancerIPs: "192.168.0.110"
-      # Не вказуємо loadBalancerIP - лише анотації
-    serviceUDP:
-      type: LoadBalancer
-      port: 53
-      externalTrafficPolicy: Local
-      annotations:
-        metallb.io/loadBalancerIPs: "192.168.0.110"
-    serviceWeb:
-      type: LoadBalancer
-      port: 80
-      annotations:
-        metallb.io/loadBalancerIPs: "192.168.0.110"
-    
     persistentVolumeClaim:
       enabled: true
-      # НЕ вказуємо existingClaim - нехай створить новий
-      storageClass: ""  # default storage class
+      storageClass: ""
       size: 1Gi
       accessModes:
         - ReadWriteOnce
     
-    # Налаштування ресурсів
     resources:
       limits:
         cpu: 500m
@@ -72,32 +70,13 @@ spec:
         cpu: 200m
         memory: 256Mi
     
-    # Привілейований режим для DNS операцій
     privileged: true
     
-    # Додаткові налаштування Pi-hole
     admin:
       enabled: true
-
+    
     doh:
       enabled: true
       pullPolicy: Always
-      envVars: {
+      envVars:
         DOH_UPSTREAM: "https://1.1.1.1/dns-query"
-      }
-    
-    # Додаткові adlists з blocklistproject
-#    adlists:
-#      # Основні категорії блокування
-#      - "https://raw.githubusercontent.com/blocklistproject/Lists/master/ads.txt"
-#      - "https://raw.githubusercontent.com/blocklistproject/Lists/master/malware.txt"
-#      - "https://raw.githubusercontent.com/blocklistproject/Lists/master/phishing.txt"
-#      - "https://raw.githubusercontent.com/blocklistproject/Lists/master/tracking.txt"
-#      - "https://raw.githubusercontent.com/blocklistproject/Lists/master/scam.txt"
-#      - "https://raw.githubusercontent.com/blocklistproject/Lists/master/abuse.txt"
-#      - "https://raw.githubusercontent.com/blocklistproject/Lists/master/drugs.txt"
-#      - "https://raw.githubusercontent.com/blocklistproject/Lists/master/gambling.txt"
-#      - "https://raw.githubusercontent.com/blocklistproject/Lists/master/porn.txt"
-#      - "https://raw.githubusercontent.com/blocklistproject/Lists/master/ransomware.txt"
-#      - "https://raw.githubusercontent.com/blocklistproject/Lists/master/redirect.txt"
-#      - "https://raw.githubusercontent.com/blocklistproject/Lists/master/smart-tv.txt"
