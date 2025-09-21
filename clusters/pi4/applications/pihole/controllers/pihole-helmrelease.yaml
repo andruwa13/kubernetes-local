@@ -29,26 +29,25 @@ spec:
     
     # Глобальні анотації для всіх сервісів
     serviceAnnotations:
-      metallb.universe.tf/address-pool: "pihole-pool"
-      metallb.universe.tf/allow-shared-ip: "pihole-svc"
+      metallb.universe.tf/loadBalancerIPs: "192.168.0.110"
     
     # Налаштування сервісу з LoadBalancer для DNS
     serviceTCP:
       type: LoadBalancer
       port: 53
       annotations:
-        metallb.universe.tf/allow-shared-ip: "pihole-svc"
+        metallb.universe.tf/loadBalancerIPs: "192.168.0.110"
       # Не вказуємо loadBalancerIP - лише анотації
     serviceUDP:
       type: LoadBalancer
       port: 53
       annotations:
-        metallb.universe.tf/allow-shared-ip: "pihole-svc"
+        metallb.universe.tf/loadBalancerIPs: "192.168.0.110"
     serviceWeb:
       type: LoadBalancer
       port: 80
       annotations:
-        metallb.universe.tf/allow-shared-ip: "pihole-svc"
+        metallb.universe.tf/loadBalancerIPs: "192.168.0.110"
     
     persistentVolumeClaim:
       enabled: true
