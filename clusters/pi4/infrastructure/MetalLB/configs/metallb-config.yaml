@@ -5,7 +5,16 @@ metadata:
   namespace: metallb-system
 spec:
   addresses:
-  - 192.168.0.100-192.168.0.110
+  - 192.168.0.100-192.168.0.109
+---
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: pihole-pool
+  namespace: metallb-system
+spec:
+  addresses:
+  - 192.168.0.110/32
 ---
 apiVersion: metallb.io/v1beta1
 kind: L2Advertisement
@@ -15,3 +24,4 @@ metadata:
 spec:
   ipAddressPools:
   - main-pool
+  - pihole-pool
