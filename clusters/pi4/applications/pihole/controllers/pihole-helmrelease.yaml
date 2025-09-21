@@ -21,7 +21,7 @@ spec:
     # DNS2: "8.8.4.4"
     
     # Використання LoadBalancer замість hostNetwork для кращої інтеграції
-    hostNetwork: true
+    hostNetwork: false
     dnsPolicy: "ClusterFirst"
     
     nodeSelector:
@@ -31,16 +31,21 @@ spec:
     serviceAnnotations:
       metallb.io/loadBalancerIPs: "192.168.0.110"
     
+
+
+    
     # Налаштування сервісу з LoadBalancer для DNS
     serviceTCP:
       type: LoadBalancer
       port: 53
+      externalTrafficPolicy: Local
       annotations:
         metallb.io/loadBalancerIPs: "192.168.0.110"
       # Не вказуємо loadBalancerIP - лише анотації
     serviceUDP:
       type: LoadBalancer
       port: 53
+      externalTrafficPolicy: Local
       annotations:
         metallb.io/loadBalancerIPs: "192.168.0.110"
     serviceWeb:
