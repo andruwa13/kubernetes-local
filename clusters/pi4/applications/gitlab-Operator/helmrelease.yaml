@@ -1,0 +1,27 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: gitlab-operator
+  namespace: gitlab
+spec:
+  releaseName: gitlab-operator
+  chart:
+    spec:
+      chart: gitlab-operator
+      sourceRef:
+        kind: HelmRepository
+        name: gitlab
+        namespace: flux-system
+      version: ">=1.0.0"
+  interval: 1m
+  timeout: 5m
+  maxHistory: 10
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+  values:
+    nodeSelector:
+      kubernetes.io/hostname: server
