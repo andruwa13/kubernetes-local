@@ -1,0 +1,66 @@
+# Конфігурація Polaris для перевірки безпеки Kubernetes
+checks:
+  # Ресурсні обмеження
+  cpuRequestsMissing: warning
+  cpuLimitsMissing: warning
+  memoryRequestsMissing: warning
+  memoryLimitsMissing: warning
+  
+  # Безпека контейнерів
+  runAsRootAllowed: error
+  runAsNonRoot: warning
+  readOnlyRootFilesystem: warning
+  privilegeEscalationAllowed: error
+  runAsPrivileged: error
+  notReadOnlyRootFilesystem: warning
+  
+  # Мережева безпека
+  hostNetworkSet: error
+  hostPortSet: warning
+  hostIPCSet: error
+  hostPIDSet: error
+  
+  # Capabilities
+  insecureCapabilities: error
+  dangerousCapabilities: error
+  
+  # Health checks
+  readinessProbeMissing: warning
+  livenessProbeMissing: warning
+  
+  # Якість образів
+  tagNotSpecified: error
+  pullPolicyNotAlways: warning
+  
+  # Ingress
+  tlsSettingsMissing: warning
+
+# Виключення для певних namespace або застосунків
+exemptions:
+  - namespace: kube-system
+    controllerNames:
+      - kube-apiserver
+      - kube-proxy
+      - kube-scheduler
+      - etcd-manager-events
+      - kube-controller-manager
+      - kube-dns
+      - etcd-manager-main
+  - namespace: kube-system
+    rules:
+      - hostNetworkSet
+      - hostPortSet
+      - hostPIDSet
+      - hostIPCSet
+      - runAsRootAllowed
+      - runAsPrivileged
+      - privilegeEscalationAllowed
+
+# Налаштування контролерів
+controllers_to_scan:
+  - Deployments
+  - DaemonSets
+  - StatefulSets
+  - Jobs
+  - CronJobs
+  - ReplicationControllers

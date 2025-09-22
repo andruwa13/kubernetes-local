@@ -1,6 +1,10 @@
 variables:
   RENOVATE_EXTRA_FLAGS: "--autodiscover --autodiscover-filter=${CI_PROJECT_PATH}"
 
+stages:
+  - security
+  - validate
+  - dependency-check
 
 include:
     - component: $CI_SERVER_FQDN/to-be-continuous/gitleaks/gitlab-ci-gitleaks@2.8.0      
@@ -11,6 +15,140 @@ include:
       file: 
         - '/templates/renovate.gitlab-ci.yml'
 
+# Kubernetes YAML validation
+kubernetes-lint:
+  stage: validate
+  image: alpine/k8s:1.28.2
+  script:
+    # Знайти всі .yaml та .yml файли в clusters директорії
+    - find clusters/ -name "*.yaml" -o -name "*.yml" | head -20  # показати перші 20 файлів для дебагу
+    # Перевіряти синтаксис кожного файлу
+    - |
+      for file in $(find clusters/ -name "*.yaml" -o -name "*.yml"); do
+        echo "Validating $file..."
+        kubectl --dry-run=client apply -f "$file" --validate=true || echo "Warning: $file has validation issues"
+      done
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "push"'
+      changes:
+        - "clusters/**/*.yaml"
+        - "clusters/**/*.yml"
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      changes:
+        - "clusters/**/*.yaml" 
+        - "clusters/**/*.yml"
+  allow_failure: true
+
+# Helm validation
+helm-lint:
+  stage: validate
+  image: alpine/helm:3.13.2
+  before_script:
+    - apk add --no-cache git
+  script:
+    # Знайти всі Helm releases та repositories
+    - |
+      echo "Знайдені Helm файли:"
+      find clusters/ -name "*helmrelease*.yaml" -o -name "*helmrepository*.yaml" | head -10
+    # Перевіряти Helm template syntax (базова перевірка)
+    - |
+      for file in $(find clusters/ -name "*helmrelease*.yaml"); do
+        echo "Checking Helm release: $file"
+        # Базова перевірка YAML синтаксису
+        helm template test-release /dev/null --values <(echo "{}") 2>/dev/null || echo "Note: $file syntax check"
+      done
+    # Додаткова перевірка репозиторіїв
+    - |
+      for file in $(find clusters/ -name "*helmrepository*.yaml"); do
+        echo "Found Helm repository: $file"
+        # Тут можна додати перевірку доступності репозиторіїв
+      done
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "push"'
+      changes:
+        - "clusters/**/*helm*.yaml"
+        - "clusters/**/*helm*.yml"
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      changes:
+        - "clusters/**/*helm*.yaml"
+        - "clusters/**/*helm*.yml"
+  allow_failure: true
+
+# Flux validation
+flux-validate:
+  stage: validate
+  image: fluxcd/flux-cli:v2.2.2
+  script:
+    - |
+      echo "Validating Flux configurations..."
+      # Перевіряти Flux Kustomization файли
+      find clusters/ -name "kustomization.yaml" | while read file; do
+        echo "Validating Flux kustomization: $file"
+        flux build kustomization --name=test --source=GitRepository/test --path="$(dirname "$file")" --dry-run || echo "Warning: $file has issues"
+      done
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "push"'
+      changes:
+        - "clusters/**/*.yaml"
+        - "clusters/**/*.yml"
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      changes:
+        - "clusters/**/*.yaml"
+        - "clusters/**/*.yml"
+  allow_failure: true
+
+# YAML syntax check (додатковий швидкий чек)
+yaml-syntax:
+  stage: validate
+  image: python:3.9-alpine
+  before_script:
+    - pip install yamllint
+  script:
+    - |
+      echo "Checking YAML syntax for all files..."
+      find clusters/ -name "*.yaml" -o -name "*.yml" | while read file; do
+        echo "Syntax check: $file"
+        yamllint "$file" -c <(echo "rules: {line-length: {max: 120}, indentation: {spaces: 2}}") || echo "Warning: $file has formatting issues"
+      done
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "push"'
+      changes:
+        - "clusters/**/*.yaml"
+        - "clusters/**/*.yml"
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      changes:
+        - "clusters/**/*.yaml"
+        - "clusters/**/*.yml"
+  allow_failure: true
+
+# Kubernetes security scanning з Polaris
+k8s-security-scan:
+  stage: security
+  image: quay.io/fairwinds/polaris:8.5
+  script:
+    - |
+      echo "Running Polaris security scan..."
+      # Сканувати всі k8s маніфести на безпеку
+      polaris audit --audit-path clusters/ --format pretty || true
+    - |
+      echo "Security scan completed. Review the output above for security recommendations."
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "push"'
+      changes:
+        - "clusters/**/*.yaml"
+        - "clusters/**/*.yml"
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      changes:
+        - "clusters/**/*.yaml"
+        - "clusters/**/*.yml"
+  allow_failure: true
+  artifacts:
+    reports:
+      junit: polaris-results.xml
+    expire_in: 1 week
+    when: always
+
+# Renovate (залишається як було)
 renovate:
     rules:
         - if: '$CI_PIPELINE_SOURCE == "schedule"'

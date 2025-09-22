@@ -1,0 +1,33 @@
+# Додатковий конфіг для yamllint
+extends: default
+
+rules:
+  # Дозволити довгі рядки для деяких випадків
+  line-length:
+    max: 120
+    level: warning
+  
+  # Налаштування відступів  
+  indentation:
+    spaces: 2
+    indent-sequences: true
+    check-multi-line-strings: false
+  
+  # Дозволити пусті рядки
+  empty-lines:
+    max: 2
+    max-start: 1
+    max-end: 1
+  
+  # Налаштування коментарів
+  comments:
+    min-spaces-from-content: 1
+    require-starting-space: true
+  
+  # Дозволити документи без --- на початку
+  document-start: disable
+  
+  # Налаштування булевих значень
+  truthy:
+    allowed-values: ['true', 'false', 'True', 'False']
+    check-keys: true
