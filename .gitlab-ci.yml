@@ -3,8 +3,13 @@ variables:
 
 
 include:
+    - component: $CI_SERVER_FQDN/to-be-continuous/gitleaks/gitlab-ci-gitleaks@2.8.0      
+      inputs:
+        args: "--no-banner"
+
     - project: 'renovate-bot/renovate-runner'
-      file: '/templates/renovate.gitlab-ci.yml'
+      file: 
+        - '/templates/renovate.gitlab-ci.yml'
 
 renovate:
     rules:
