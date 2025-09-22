@@ -38,3 +38,5 @@ spec:
     webhook:
       # Збільшуємо timeout для webhook для стабільності
       timeoutSeconds: 30
+    nodeSelector:
+      kubernetes.io/hostname: server
