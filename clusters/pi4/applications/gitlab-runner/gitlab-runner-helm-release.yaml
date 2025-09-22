@@ -1,0 +1,45 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: gitlab-runner
+  namespace: gitlab
+spec:
+  interval: 10m
+  chart:
+    spec:
+      chart: gitlab-runner
+      version: "0.81.0"
+      sourceRef:
+        kind: HelmRepository
+        name: gitlab-runner-charts
+        namespace: flux-system
+  values:
+    nodeSelector:
+      kubernetes.io/hostname: server
+    gitlabUrl: "https://gitlab.com/"
+    rbac:
+      create: true
+    runners:
+      secret: gitlab-runner-secret
+      config: |
+        concurrent = 10
+        check_interval = 30
+
+        [[runners]]
+          name = "kubernetes-runner"
+          url = "https://gitlab.com/"
+          executor = "kubernetes"
+          [runners.custom_build_dir]
+          [runners.kubernetes]
+            pod_annotations = { "kubernetes.io/arch": "arm64" }
+            pull_policy = ["if-not-present"]
+            allowed_pull_policies = ["always", "if-not-present"]
+            image = "ubuntu:22.04"
+            privileged = true
+          [runners.kubernetes.volumes]
+            [[runners.kubernetes.volumes.host_path]]
+              name = "containerd-socket"
+              mount_path = "/run/containerd/containerd.sock"
+              read_only = false
+              path = "/run/containerd/containerd.sock"
+          [runners.kubernetes.defaults]
