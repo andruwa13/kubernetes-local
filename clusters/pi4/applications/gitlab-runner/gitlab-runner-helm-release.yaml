@@ -14,8 +14,8 @@ spec:
         name: gitlab-runner-charts
         namespace: flux-system
   values:
-    pod_annotations : 
-      "kubernetes.io/arch": "arm64"
+#    pod_annotations: 
+#      "kubernetes.io/arch": "arm64"
     nodeSelector:
       kubernetes.io/hostname: server
     gitlabUrl: "https://gitlab.com/"
@@ -37,6 +37,8 @@ spec:
             allowed_pull_policies = ["always", "if-not-present"]
             image = "ubuntu:22.04"
             privileged = true
+          [runners.kubernetes.node_selector]
+            kubernetes.io/hostname: server
           [runners.kubernetes.volumes]
             [[runners.kubernetes.volumes.host_path]]
               name = "containerd-socket"
