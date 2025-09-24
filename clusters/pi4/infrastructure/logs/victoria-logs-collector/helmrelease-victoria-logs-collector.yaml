@@ -97,11 +97,11 @@ spec:
 #        memory: 512Mi
 
     # Налаштування безпеки
-    securityContext:
-      runAsNonRoot: true
-      runAsUser: 65534
-      runAsGroup: 65534
-      fsGroup: 65534
+#    securityContext:
+#      runAsNonRoot: true
+#      runAsUser: 65534
+#      runAsGroup: 65534
+#      fsGroup: 65534
 
     # Толерації для розгортання на всіх нодах
     tolerations:
