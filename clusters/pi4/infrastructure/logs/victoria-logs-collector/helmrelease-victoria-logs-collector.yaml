@@ -29,6 +29,10 @@ spec:
             type: kubernetes_logs
             # Збір логів з усіх подів у кластері
             auto_partial_merge: true
+            # Налаштування чекпойнтів - важливо для вирішення помилки прав доступу
+            data_dir: /vector-data-dir/checkpoints
+            fingerprint:
+              strategy: "checksum"
             # Додавання мітаданих Kubernetes
             annotation_fields:
               container_image: "kubernetes.container_image"
@@ -36,6 +40,12 @@ spec:
               pod_name: "kubernetes.pod_name"
               pod_namespace: "kubernetes.pod_namespace"
               pod_node_name: "kubernetes.pod_node_name"
+            # Обробка багаторядкових логів
+            multiline:
+              condition_pattern: '^\d{4}-\d{2}-\d{2}'
+              mode: halt_before
+              start_pattern: '^\d{4}-\d{2}-\d{2}'
+              timeout_ms: 1000
         transforms:
           # Трансформація для додавання обов'язкового поля _msg
           add_msg_field:
@@ -59,13 +69,30 @@ spec:
                 ._time = now()
               }
               
+              # Зберігаємо корисні Kubernetes мітадані як лейбли
+              if exists(.kubernetes.container_name) {
+                .container = .kubernetes.container_name
+              }
+              if exists(.kubernetes.pod_name) {
+                .pod = .kubernetes.pod_name
+              }
+              if exists(.kubernetes.pod_namespace) {
+                .namespace = .kubernetes.pod_namespace
+              }
+              if exists(.kubernetes.pod_node_name) {
+                .node = .kubernetes.pod_node_name
+              }
+              
               # Очищаємо оригінальні поля, які можуть конфліктувати
               del(.message)
               del(.log)
+              del(.kubernetes)
               
               # Додаємо корисні мітки
               .stream = "kubernetes"
-              .level = "info"
+              if !exists(.level) {
+                .level = "info"
+              }
         sinks:
           vlogs_sink:
             type: http
@@ -86,22 +113,38 @@ spec:
               retry_attempts: 3
               retry_initial_backoff_secs: 1
               retry_max_duration_secs: 60
+            # Буферизація для кращої продуктивності
+            buffer:
+              type: disk
+              max_size: 268435488 # 256MB
+              when_full: block
 
     # Ресурси для Vector
-#    resources:
-#      requests:
-#        cpu: 200m
-#        memory: 256Mi
-#      limits:
-#        cpu: 1000m
-#        memory: 512Mi
+    resources:
+      requests:
+        cpu: 200m
+        memory: 256Mi
+      limits:
+        cpu: 1000m
+        memory: 512Mi
 
-    # Налаштування безпеки
+    # ВИПРАВЛЕНИЙ securityContext - дозволяємо читання логів
     securityContext:
-      runAsNonRoot: true
-      runAsUser: 65534
-      runAsGroup: 65534
-      fsGroup: 65534
+      runAsUser: 0  # root потрібен для читання /var/log
+      runAsGroup: 0
+      privileged: false
+      readOnlyRootFilesystem: false
+      allowPrivilegeEscalation: false
+      capabilities:
+        add:
+          - DAC_OVERRIDE  # для читання системних логів
+        drop:
+          - ALL
+
+    podSecurityContext:
+      runAsUser: 0
+      runAsGroup: 0
+      fsGroup: 0
 
     # Толерації для розгортання на всіх нодах
     tolerations:
@@ -114,7 +157,7 @@ spec:
     daemonset:
       enabled: true
 
-    # Монтування логів контейнерів
+    # ВИПРАВЛЕНІ монтування логів контейнерів з правильними правами
     extraVolumeMounts:
       - name: var-log
         mountPath: /var/log
@@ -122,18 +165,48 @@ spec:
       - name: var-lib-docker-containers
         mountPath: /var/lib/docker/containers
         readOnly: true
+      # K3s специфічні логи
+      - name: k3s-logs
+        mountPath: /var/lib/rancher/k3s/agent/logs
+        readOnly: true
+      # Директорія для чекпойнтів з правами запису
       - name: vector-data-dir
         mountPath: /vector-data-dir
+      # Proc filesystem для системної інформації
+      - name: proc
+        mountPath: /host/proc
+        readOnly: true
+      - name: sys
+        mountPath: /host/sys
+        readOnly: true
 
     extraVolumes:
       - name: var-log
         hostPath:
           path: /var/log
+          type: DirectoryOrCreate
       - name: var-lib-docker-containers
         hostPath:
           path: /var/lib/docker/containers
+          type: DirectoryOrCreate
+      # K3s специфічні логи
+      - name: k3s-logs
+        hostPath:
+          path: /var/lib/rancher/k3s/agent/logs
+          type: DirectoryOrCreate
+      # Директорія для чекпойнтів - використовуємо hostPath з правами запису
       - name: vector-data-dir
-        emptyDir: {}
+        hostPath:
+          path: /var/lib/vector-data
+          type: DirectoryOrCreate
+      - name: proc
+        hostPath:
+          path: /proc
+          type: Directory
+      - name: sys
+        hostPath:
+          path: /sys
+          type: Directory
 
     # Змінні оточення
     env:
@@ -143,3 +216,89 @@ spec:
         valueFrom:
           fieldRef:
             fieldPath: spec.nodeName
+      # Важливо для правильної роботи чекпойнтів
+      - name: VECTOR_DATA_DIR
+        value: "/vector-data-dir"
+
+    # ServiceAccount з необхідними правами
+    serviceAccount:
+      create: true
+      name: victoria-logs-collector
+
+# Додаткові ресурси для правильних RBAC прав
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: victoria-logs-collector
+rules:
+- apiGroups: [""]
+  resources: ["pods", "namespaces", "nodes"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: [""]
+  resources: ["pods/log"]
+  verbs: ["get"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: victoria-logs-collector
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: victoria-logs-collector
+subjects:
+- kind: ServiceAccount
+  name: victoria-logs-collector
+  namespace: vm
+
+---
+# DaemonSet для створення директорій на хостах
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: vector-data-dir-init
+  namespace: vm
+spec:
+  selector:
+    matchLabels:
+      name: vector-data-dir-init
+  template:
+    metadata:
+      labels:
+        name: vector-data-dir-init
+    spec:
+      initContainers:
+      - name: create-vector-data-dir
+        image: busybox:1.36
+        command:
+        - sh
+        - -c
+        - |
+          mkdir -p /host/var/lib/vector-data/checkpoints
+          chmod 755 /host/var/lib/vector-data
+          chmod 755 /host/var/lib/vector-data/checkpoints
+          echo "Vector data directory created successfully"
+        securityContext:
+          privileged: true
+        volumeMounts:
+        - name: host-var-lib
+          mountPath: /host/var/lib
+      containers:
+      - name: pause
+        image: k8s.gcr.io/pause:3.8
+        resources:
+          requests:
+            cpu: 1m
+            memory: 1Mi
+      volumes:
+      - name: host-var-lib
+        hostPath:
+          path: /var/lib
+          type: Directory
+      tolerations:
+      - effect: NoSchedule
+        operator: Exists
+      - effect: NoExecute
+        operator: Exists
