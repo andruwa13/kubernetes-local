@@ -38,7 +38,7 @@ spec:
             image = "ubuntu:22.04"
             privileged = true
           [runners.kubernetes.node_selector]
-            kubernetes.io/hostname = server
+            "kubernetes.io/hostname" = "server"
           [runners.kubernetes.volumes]
             [[runners.kubernetes.volumes.host_path]]
               name = "containerd-socket"
