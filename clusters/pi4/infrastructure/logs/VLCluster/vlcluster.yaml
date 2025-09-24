@@ -36,8 +36,9 @@ spec:
       kubernetes.io/hostname: server
 
     # Додаткові аргументи для vlstorage
-#    extraArgs:
-#      http.pathPrefix: "/vlstorage"
+    extraArgs:
+      # Оптимізація для обробки великих обсягів логів
+      memory.allowedPercent: "80"
 
   # Конфігурація vlselect (аналог vmselect)
   vlselect:
@@ -55,10 +56,11 @@ spec:
       kubernetes.io/hostname: server
 
     # Додаткові аргументи для vlselect
-#    extraArgs:
-#      http.pathPrefix: "/vlselect"
+    extraArgs:
       # Увімкнення VLUI
-#      http.disableResponseCompression: "false"
+      http.disableResponseCompression: "false"
+      # Збільшення таймауту для складних запитів
+      search.maxQueryDuration: "10m"
 
   # Конфігурація vlinsert (аналог vminsert)
   vlinsert:
@@ -77,6 +79,9 @@ spec:
 
     # Додаткові аргументи для vlinsert
     extraArgs:
-#      http.pathPrefix: "/vlinsert"
       # Максимальний розмір лог повідомлення
       insert.maxFieldsPerLine: "1000"
+      # Максимальний розмір одного лог запису
+      insert.maxLineSizeBytes: "16384"
+      # Оптимізація для обробки JSON логів
+      loggerFormat: "json"
