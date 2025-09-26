@@ -15,6 +15,13 @@ spec:
         namespace: flux-system
   interval: 1m
   values:
+    transforms: 
+      - name: remap-msg
+        type: remap
+        inputs: ["kubernetes_logs"] # тут source_id = ім'я джерела (наприклад "kubernetes_logs")
+        source: |
+          ._msg = .message ?? .log ?? .msg
+
 #    global:
 #      image:
 #        repository: timberio/vector:tag: 0.49.0-debian
