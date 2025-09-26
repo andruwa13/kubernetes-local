@@ -24,7 +24,7 @@ spec:
   values:
     securityContext:
       privileged: true
-    hostNetwork: true
+    hostNetwork: false
     image:
       tag: "2025.8.2"
       imagePullPolicy: IfNotPresent
@@ -32,11 +32,14 @@ spec:
       enabled: true
       size: 5Gi
     service:
-      type: ClusterIP
+      type: LoadBalancer
+      port: 8123
+      annotations:
+        metallb.io/loadBalancerIPs: "192.168.0.109"
     ingress:
       enabled: false
     nodeSelector:
-      kubernetes.io/hostname: pi4
+      kubernetes.io/hostname: server
     additionalVolumes:
       - name: dbus
         hostPath:
