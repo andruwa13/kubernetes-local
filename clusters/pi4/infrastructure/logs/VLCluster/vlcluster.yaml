@@ -13,7 +13,7 @@ spec:
   # Конфігурація vlstorage (аналог vmstorage)
   vlstorage:
     replicaCount: 1
-    retentionPeriod: "30d"
+    retentionPeriod: "7d"
     storageDataPath: "/vl-data"
     
     storage:
