@@ -39,4 +39,4 @@ spec:
       # Збільшуємо timeout для webhook для стабільності
       timeoutSeconds: 30
     nodeSelector:
-      kubernetes.io/hostname: server
+      kubernetes.io/hostname: pi4
