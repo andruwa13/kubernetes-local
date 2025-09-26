@@ -8,138 +8,26 @@ spec:
   chart:
     spec:
       chart: victoria-logs-collector
-      version: "0.0.5" # потрібна реальна версія
+      version: "0.0.5"
       sourceRef:
         kind: HelmRepository
         name: victoria-metrics
         namespace: flux-system
   interval: 1m
   values:
-    # Конфігурація Vector для правильного форматування логів для VictoriaLogs
-    vector:
-      role: Agent
-      customConfig:
-        data_dir: /vector-data-dir
-        api:
-          enabled: true
-          address: 127.0.0.1:8686
-          playground: false
-        sources:
-          kubernetes_logs:
-            type: kubernetes_logs
-            # Збір логів з усіх подів у кластері
-            auto_partial_merge: true
-            # Додавання мітаданих Kubernetes
-            annotation_fields:
-              container_image: "kubernetes.container_image"
-              container_name: "kubernetes.container_name"
-              pod_name: "kubernetes.pod_name"
-              pod_namespace: "kubernetes.pod_namespace"
-              pod_node_name: "kubernetes.pod_node_name"
-        transforms:
-          # Трансформація для додавання обов'язкового поля _msg
-          add_msg_field:
-            type: remap
-            inputs:
-              - kubernetes_logs
-            source: |
-              # Встановлюємо _msg поле з основного повідомлення
-              if exists(.message) {
-                ._msg = .message
-              } else if exists(.log) {
-                ._msg = .log
-              } else {
-                ._msg = to_string(.)
-              }
-              
-              # Додаємо часову мітку у форматі, який розуміє VictoriaLogs
-              if exists(.timestamp) {
-                ._time = .timestamp
-              } else {
-                ._time = now()
-              }
-              
-              # Очищаємо оригінальні поля, які можуть конфліктувати
-              del(.message)
-              del(.log)
-              
-              # Додаємо корисні мітки
-              .stream = "kubernetes"
-              .level = "info"
-        sinks:
-          vlogs_sink:
-            type: http
-            inputs:
-              - add_msg_field
-            uri: "http://vlinsert-dev-logs.vm.svc.cluster.local:9481/insert/jsonline"
-            method: post
-            encoding:
-              codec: json
-            headers:
-              Content-Type: "application/x-ndjson"
-            # Батчинг для кращої продуктивності
-            batch:
-              max_events: 1000
-              timeout_secs: 10
-            # Повторні спроби у випадку помилок
-            request:
-              retry_attempts: 3
-              retry_initial_backoff_secs: 1
-              retry_max_duration_secs: 60
-
-    # Ресурси для Vector
-#    resources:
-#      requests:
-#        cpu: 200m
-#        memory: 256Mi
-#      limits:
-#        cpu: 1000m
-#        memory: 512Mi
-
-    # Налаштування безпеки
-#    securityContext:
-#      runAsNonRoot: true
-#      runAsUser: 65534
-#      runAsGroup: 65534
-#      fsGroup: 65534
-
-    # Толерації для розгортання на всіх нодах
-    tolerations:
-      - effect: NoSchedule
-        operator: Exists
-      - effect: NoExecute
-        operator: Exists
-
-    # Примусове розгортання на всіх нодах як DaemonSet
-    daemonset:
-      enabled: true
-
-    # Монтування логів контейнерів
-    extraVolumeMounts:
-      - name: var-log
-        mountPath: /var/log
-        readOnly: true
-      - name: var-lib-docker-containers
-        mountPath: /var/lib/docker/containers
-        readOnly: true
-      - name: vector-data-dir
-        mountPath: /vector-data-dir
-
-    extraVolumes:
-      - name: var-log
-        hostPath:
-          path: /var/log
-      - name: var-lib-docker-containers
-        hostPath:
-          path: /var/lib/docker/containers
-      - name: vector-data-dir
-        emptyDir: {}
-
-    # Змінні оточення
-    env:
-      - name: VECTOR_LOG
-        value: "info"
-      - name: NODE_NAME
-        valueFrom:
-          fieldRef:
-            fieldPath: spec.nodeName
+#    global:
+#      image:
+#        repository: timberio/vector:tag: 0.49.0-debian
+    remoteWrite:
+      - url: "http://vlinsert-dev-logs.vm.svc.cluster.local:9481"
+#    fileLogs:
+#      - path: "/var/lib/rancher/k3s/agent/containerd/containerd.log"
+#    extraVolumeMounts:
+#      - name: containerd-logs
+#        mountPath: /var/lib/rancher/k3s/agent/containerd
+#        readOnly: true
+#    extraVolumes:
+#      - name: containerd-logs
+#        hostPath:
+#          path: /var/lib/rancher/k3s/agent/containerd
+#          type: DirectoryOrCreate
