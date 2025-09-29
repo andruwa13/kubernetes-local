@@ -39,7 +39,7 @@ spec:
     ingress:
       enabled: false
     nodeSelector:
-      kubernetes.io/hostname: pi4
+      kubernetes.io/hostname: server
     additionalVolumes:
       - name: dbus
         hostPath:
