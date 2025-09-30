@@ -24,7 +24,7 @@ spec:
   values:
     securityContext:
       privileged: true
-    hostNetwork: false
+    hostNetwork: true
     image:
       tag: "2025.9.4"
       imagePullPolicy: IfNotPresent
