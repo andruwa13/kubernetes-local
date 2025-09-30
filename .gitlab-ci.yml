@@ -1,3 +1,103 @@
+stages:
+  - lint
+
+default:
+  image: alpine:3.19
+  before_script:
+    - apk add --no-cache bash curl git jq yq
+
+# FluxCD validation (schema/CRD awareness + basic checks)
+fluxcd:lint:
+  stage: lint
+  script:
+    - |
+      curl -s https://fluxcd.io/install.sh | bash
+      export PATH=$PATH:/usr/local/bin
+      flux --version
+      # Pre-flight check (no cluster access required in CI, still validates env)
+      flux check --pre
+      # Validate the kustomizations in the repo path
+      flux validate kustomization --path ./clusters/pi4
+
+# Kustomize build validation (ensures manifests render)
+kustomize:lint:
+  stage: lint
+  script:
+    - |
+      KUSTOMIZE_VERSION=v5.4.2
+      curl -sSL "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize/${KUSTOMIZE_VERSION}/kustomize_${KUSTOMIZE_VERSION}_linux_amd64.tar.gz" -o /tmp/kustomize.tgz
+      tar -xzvf /tmp/kustomize.tgz -C /usr/local/bin kustomize >/dev/null
+      kustomize version
+      # Ensure the root cluster builds
+      kustomize build ./clusters/pi4 >/dev/null
+
+# Helm lint for charts referenced by HelmRelease CRs
+# - Parses HelmRelease files to collect repo/chart/version
+# - Adds helm repos from centralized clusters/pi4/repositories/*.yaml
+# - Pulls each chart and runs `helm lint` on the extracted chart
+helm:lint:
+  stage: lint
+  script:
+    - |
+      # Install Helm
+      curl -sSL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+      helm version
+
+      # Add all helm repositories declared in clusters/pi4/repositories/*.yaml
+      set -euo pipefail
+      for f in clusters/pi4/repositories/*.yaml; do
+        name=$(yq -r '.metadata.name' "$f")
+        url=$(yq -r '.spec.url' "$f")
+        if [ -n "$name" ] && [ -n "$url" ] && [ "$name" != "null" ] && [ "$url" != "null" ]; then
+          helm repo add "$name" "$url"
+        fi
+      done
+      helm repo update
+
+      # Find all HelmRelease manifests
+      mapfile -t HR_FILES < <(git ls-files | grep -E '\\.(ya?ml)$' | xargs grep -l "kind: HelmRelease" || true)
+      if [ ${#HR_FILES[@]} -eq 0 ]; then
+        echo "No HelmRelease manifests found. Skipping helm lint."
+        exit 0
+      fi
+
+      status=0
+      tmpdir=$(mktemp -d)
+      for hr in "${HR_FILES[@]}"; do
+        chart=$(yq -r '.spec.chart.spec.chart' "$hr")
+        version=$(yq -r '.spec.chart.spec.version // ""' "$hr")
+        repo=$(yq -r '.spec.chart.spec.sourceRef.name' "$hr")
+        if [ -z "$chart" ] || [ "$chart" = "null" ] || [ -z "$repo" ] || [ "$repo" = "null" ]; then
+          echo "[WARN] Skipping $hr (missing chart or repo)"
+          continue
+        fi
+
+        echo "Linting chart: repo=$repo chart=$chart version=${version:-latest} (from $hr)"
+        pull_args=("$repo/$chart")
+        if [ -n "$version" ] && [ "$version" != "null" ]; then
+          pull_args+=("--version" "$version")
+        fi
+        helm pull "${pull_args[@]}" --untar --untardir "$tmpdir" || { echo "[ERROR] helm pull failed for $repo/$chart"; status=1; continue; }
+        if [ -d "$tmpdir/$chart" ]; then
+          helm lint "$tmpdir/$chart" || status=1
+        else
+          # Some charts unpack with a different folder name; attempt to find it
+          unpack_dir=$(find "$tmpdir" -maxdepth 1 -type d -name "${chart}*" | head -n1 || true)
+          if [ -n "$unpack_dir" ]; then
+            helm lint "$unpack_dir" || status=1
+          else
+            echo "[ERROR] Could not find unpacked chart directory for $chart"
+            status=1
+          fi
+        fi
+      done
+      rm -rf "$tmpdir"
+      exit $status
+
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH
 variables:
   RENOVATE_EXTRA_FLAGS: "--autodiscover --autodiscover-filter=${CI_PROJECT_PATH}"
 
