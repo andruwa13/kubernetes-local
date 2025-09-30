@@ -1,8 +1,9 @@
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmRepository
 metadata:
-  name: victoria-metrics
+  name: home-assistant
   namespace: flux-system
 spec:
   interval: 5m
-  url: https://victoriametrics.github.io/helm-charts/
+  url: http://pajikos.github.io/home-assistant-helm-chart
+

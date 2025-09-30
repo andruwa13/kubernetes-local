@@ -1,8 +1,9 @@
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmRepository
 metadata:
-  name: metallb
+  name: prometheus-community
   namespace: flux-system
 spec:
   interval: 5m
-  url: https://metallb.github.io/metallb
+  url: https://prometheus-community.github.io/helm-charts
+

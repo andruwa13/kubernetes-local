@@ -1,8 +1,9 @@
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmRepository
 metadata:
-  name: home-assistant
+  name: metallb
   namespace: flux-system
 spec:
   interval: 5m
-  url: http://pajikos.github.io/home-assistant-helm-chart
+  url: https://metallb.github.io/metallb
+

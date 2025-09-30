@@ -1,9 +1,9 @@
----
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmRepository
 metadata:
-  name: gitlab
+  name: victoria-metrics
   namespace: flux-system
 spec:
-  interval: 1m0s
-  url: https://charts.gitlab.io
+  interval: 5m
+  url: https://victoriametrics.github.io/helm-charts/
+

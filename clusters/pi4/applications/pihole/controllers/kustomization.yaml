@@ -4,4 +4,4 @@ kind: Kustomization
 resources:
   - namespace.yaml
   - pihole-helmrepo.yaml
-  - pihole-helmrelease.yaml
+  - helmrelease.yaml

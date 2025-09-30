@@ -11,7 +11,7 @@ spec:
       version: "0.81.0"
       sourceRef:
         kind: HelmRepository
-        name: gitlab-runner-charts
+        name: gitlab
         namespace: flux-system
   values:
 #    pod_annotations: 
