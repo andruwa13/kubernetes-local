@@ -1,5 +1,7 @@
 stages:
   - lint
+  - test
+  - deploy
 
 default:
   image: alpine:3.19
