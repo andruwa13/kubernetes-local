@@ -28,8 +28,17 @@ kustomize:lint:
       curl -sSL "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize/${KUSTOMIZE_VERSION}/kustomize_${KUSTOMIZE_VERSION}_linux_amd64.tar.gz" -o /tmp/kustomize.tgz
       tar -xzvf /tmp/kustomize.tgz -C /usr/local/bin kustomize >/dev/null
       kustomize version
-      # Ensure the root cluster builds
-      kustomize build ./clusters/pi4 >/dev/null
+      # Build all Kustomizations under clusters/pi4 (no root-level kustomization present)
+      set -euo pipefail
+      mapfile -t K_DIRS < <(git ls-files | grep -E '^clusters/pi4/.*/kustomization\.ya?ml$' | xargs -n1 dirname | sort -u)
+      if [ ${#K_DIRS[@]} -eq 0 ]; then
+        echo "No kustomization.yaml files found under clusters/pi4"
+        exit 1
+      fi
+      for d in "${K_DIRS[@]}"; do
+        echo "Validating kustomize build for: $d"
+        kustomize build "$d" >/dev/null
+      done
 
 # Helm lint for charts referenced by HelmRelease CRs
 # - Parses HelmRelease files to collect repo/chart/version
