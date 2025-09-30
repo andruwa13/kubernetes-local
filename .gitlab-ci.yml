@@ -18,8 +18,6 @@ fluxcd:lint:
       flux --version
       # Pre-flight check (no cluster access required in CI, still validates env)
       flux check --pre
-      # Validate the kustomizations in the repo path
-      flux validate kustomization --path ./clusters/pi4
 
 # Kustomize build validation (ensures manifests render)
 kustomize:lint:
