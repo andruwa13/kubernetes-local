@@ -9,7 +9,7 @@ metadata:
 spec:
   retentionPeriod: "30d"
   # renovate: datasource=github-releases depName=VictoriaMetrics/VictoriaMetrics
-  clusterVersion: v1.126.0-cluster
+  clusterVersion: v1.127.0-cluster
   replicationFactor: 1
   
   vmstorage:
