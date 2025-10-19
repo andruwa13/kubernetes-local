@@ -1,40 +1,41 @@
-apiVersion: helm.toolkit.fluxcd.io/v2
-kind: HelmRelease
-metadata:
-  name: victoria-logs-collector
-  namespace: vm
-spec:
-  releaseName: victoria-logs-collector
-  chart:
-    spec:
-      chart: victoria-logs-collector
-      version: "0.0.5"
-      sourceRef:
-        kind: HelmRepository
-        name: victoria-metrics
-        namespace: flux-system
-  interval: 1m
-  values:
-    transforms: 
-      - name: remap-msg
-        type: remap
-        inputs: ["kubernetes_logs"] # тут source_id = ім'я джерела (наприклад "kubernetes_logs")
-        source: |
-          ._msg = .message ?? .log ?? .msg
-
-#    global:
-#      image:
-#        repository: timberio/vector:tag: 0.49.0-debian
-    remoteWrite:
-      - url: "http://vlinsert-dev-logs.vm.svc.cluster.local:9481"
-#    fileLogs:
-#      - path: "/var/lib/rancher/k3s/agent/containerd/containerd.log"
-#    extraVolumeMounts:
-#      - name: containerd-logs
-#        mountPath: /var/lib/rancher/k3s/agent/containerd
-#        readOnly: true
-#    extraVolumes:
-#      - name: containerd-logs
-#        hostPath:
-#          path: /var/lib/rancher/k3s/agent/containerd
-#          type: DirectoryOrCreate
+#apiVersion: helm.toolkit.fluxcd.io/v2
+#kind: HelmRelease
+#metadata:
+#  name: victoria-logs-collector
+#  namespace: vm
+#spec:
+#  releaseName: victoria-logs-collector
+#  chart:
+#    spec:
+#      chart: victoria-logs-collector
+#      version: "0.0.5"
+#      sourceRef:
+#        kind: HelmRepository
+#        name: victoria-metrics
+#        namespace: flux-system
+#  interval: 1m
+#  values:
+#    transforms: 
+#      - name: remap-msg
+#        type: remap
+#        inputs: ["kubernetes_logs"] # тут source_id = ім'я джерела (наприклад "kubernetes_logs")
+#        source: |
+#          ._msg = .message ?? .log ?? .msg
+#
+##    global:
+##      image:
+##        repository: timberio/vector:tag: 0.49.0-debian
+#    remoteWrite:
+#      - url: "http://vlinsert-dev-logs.vm.svc.cluster.local:9481"
+##    fileLogs:
+##      - path: "/var/lib/rancher/k3s/agent/containerd/containerd.log"
+##    extraVolumeMounts:
+##      - name: containerd-logs
+##        mountPath: /var/lib/rancher/k3s/agent/containerd
+##        readOnly: true
+##    extraVolumes:
+##      - name: containerd-logs
+##        hostPath:
+##          path: /var/lib/rancher/k3s/agent/containerd
+##          type: DirectoryOrCreate
+#
