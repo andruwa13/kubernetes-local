@@ -31,3 +31,14 @@ spec:
         prometheus.io/scrape: "true"
         prometheus.io/port: "7472"
     installCRDs: true
+    # Відключаємо автоматичне створення IPAddressPool з Helm chart
+    configInline: |
+      address-pools:
+      - name: main-pool
+        protocol: layer2
+        addresses:
+        - 192.168.0.100-192.168.0.109
+      - name: pihole-pool
+        protocol: layer2
+        addresses:
+        - 192.168.0.110-192.168.0.110
