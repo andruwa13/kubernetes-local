@@ -28,6 +28,9 @@ spec:
       image:
         tag: "v1.16.0" 
         imagePullPolicy: IfNotPresent
+      service:
+        type: LoadBalancer
+        loadBalancerIP: "192.168.0.100"  # Використовуємо перший IP з пулу MetalLB
       metrics:
         enabled: true
         service:
