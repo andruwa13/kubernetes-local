@@ -3,4 +3,4 @@ kind: Kustomization
 resources:
   - helmrelease.yaml
   - metallb-helmrepository.yaml
-  - namespace.yaml
+  - ../../namespaces/metallb-namespace.yaml
