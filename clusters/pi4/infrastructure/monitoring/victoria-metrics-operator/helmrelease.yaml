@@ -15,14 +15,16 @@ spec:
       version: "0.54.0"
   interval: 1m
   timeout: 5m
-  maxHistory: 10
+  maxHistory: 2
   dependsOn:
     - name: prometheus-operator-crds
       namespace: vm
   install:
+    crds: Skip
     remediation:
       retries: 3
   upgrade:
+    crds: Skip
     remediation:
       retries: 3
   values:
