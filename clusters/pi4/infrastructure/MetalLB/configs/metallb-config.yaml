@@ -1,0 +1,27 @@
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: pi4-main-pool
+  namespace: metallb-system
+spec:
+  addresses:
+  - 192.168.0.100-192.168.0.109
+---
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: pi4-pihole-pool
+  namespace: metallb-system
+spec:
+  addresses:
+  - 192.168.0.110-192.168.0.110
+---
+apiVersion: metallb.io/v1beta1
+kind: L2Advertisement
+metadata:
+  name: pi4-main-pool-advertisement
+  namespace: metallb-system
+spec:
+  ipAddressPools:
+  - pi4-main-pool
+  - pi4-pihole-pool

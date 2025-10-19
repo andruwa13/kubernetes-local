@@ -23,11 +23,28 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: metallb-monitoring
+  name: metallb-configs
   namespace: flux-system
 spec:
   dependsOn:
     - name: metallb-helm
+  interval: 1h
+  retryInterval: 1m
+  timeout: 2m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./clusters/pi4/infrastructure/MetalLB/configs
+  prune: true
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: metallb-monitoring
+  namespace: flux-system
+spec:
+  dependsOn:
+    - name: metallb-configs
   interval: 1h
   retryInterval: 1m
   timeout: 2m
